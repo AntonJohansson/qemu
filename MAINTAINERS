@@ -1926,6 +1926,13 @@ F: tests/functional/test_empty_cpu_model.py
 F: tests/unit/test-smp-parse.c
 T: git https://gitlab.com/ehabkost/qemu.git machine-next
 
+TargetInfo API
+M: Pierrick Bouvier <pierrick.bouvier@linaro.org>
+M: Philippe Mathieu-Daudé <philmd@linaro.org>
+S: Supported
+F: include/qemu/target-info*.h
+F: target-info*.c
+
 Xtensa Machines
 ---------------
 sim
