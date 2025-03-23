@@ -16,4 +16,12 @@
  */
 const char *target_name(void);
 
+/**
+ * target_machine_typename:
+ *
+ * Returns: Name of the QOM interface implemented by machines
+ *          usable on this target binary.
+ */
+const char *target_machine_typename(void);
+
 #endif

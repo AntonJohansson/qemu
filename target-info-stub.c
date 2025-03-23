@@ -8,9 +8,11 @@
 
 #include "qemu/osdep.h"
 #include "qemu/target-info-impl.h"
+#include "hw/boards.h"
 
 static const TargetInfo target_info_stub = {
     .target_name = TARGET_NAME,
+    .machine_typename = TYPE_MACHINE,
 };
 
 const TargetInfo *target_info(void)
