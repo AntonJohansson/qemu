@@ -24,4 +24,11 @@ const char *target_name(void);
  */
 const char *target_machine_typename(void);
 
+/**
+ * target_aarch64:
+ *
+ * Returns whether the target architecture is Aarch64.
+ */
+bool target_aarch64(void);
+
 #endif

@@ -19,3 +19,8 @@ const char *target_machine_typename(void)
 {
     return target_info()->machine_typename;
 }
+
+bool target_aarch64(void)
+{
+    return target_info()->target_arch == SYS_EMU_TARGET_AARCH64;
+}
