@@ -13,6 +13,7 @@
 
 static const TargetInfo target_info_arm_system = {
     .target_name = "arm",
+    .target_arch = SYS_EMU_TARGET_ARM,
     .machine_typename = TYPE_TARGET_ARM_MACHINE,
 };
 

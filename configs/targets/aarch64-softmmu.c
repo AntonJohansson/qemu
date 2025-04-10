@@ -13,6 +13,7 @@
 
 static const TargetInfo target_info_aarch64_system = {
     .target_name = "aarch64",
+    .target_arch = SYS_EMU_TARGET_AARCH64,
     .machine_typename = TYPE_TARGET_AARCH64_MACHINE,
 };
 

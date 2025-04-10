@@ -12,6 +12,7 @@
 
 static const TargetInfo target_info_stub = {
     .target_name = TARGET_NAME,
+    .target_arch = -1,
     .machine_typename = TYPE_MACHINE,
 };
 
