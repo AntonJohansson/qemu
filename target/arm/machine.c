@@ -8,6 +8,7 @@
 #include "cpu-features.h"
 #include "migration/cpu.h"
 #include "target/arm/gtimer.h"
+#include "hw/arm/machines-qom.h"
 
 static bool vfp_needed(void *opaque)
 {
@@ -1110,4 +1111,15 @@ const VMStateDescription vmstate_arm_cpu = {
         &vmstate_wfxt_timer,
         NULL
     }
+};
+
+InterfaceInfo arm_aarch64_machine_interfaces[] = {
+    { TYPE_TARGET_ARM_MACHINE },
+    { TYPE_TARGET_AARCH64_MACHINE },
+    { }
+};
+
+InterfaceInfo aarch64_machine_interfaces[] = {
+    { TYPE_TARGET_AARCH64_MACHINE },
+    { }
 };
