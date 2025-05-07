@@ -19,6 +19,7 @@
 #ifndef HW_RISCV_VIRT_H
 #define HW_RISCV_VIRT_H
 
+#include "qemu/target-info.h"
 #include "hw/core/boards.h"
 #include "hw/riscv/riscv_hart.h"
 #include "hw/core/sysbus.h"
@@ -136,6 +137,16 @@ bool virt_is_acpi_enabled(RISCVVirtState *s);
 bool virt_is_iommu_sys_enabled(RISCVVirtState *s);
 void virt_acpi_setup(RISCVVirtState *vms);
 uint32_t imsic_num_bits(uint32_t count);
+
+static inline const char *virt_default_cpu_type(void)
+{
+    if (target_riscv64()) {
+        return TYPE_RISCV_CPU_BASE64;
+    } else {
+        return TYPE_RISCV_CPU_BASE32;
+    }
+}
+
 
 /*
  * The virt machine physical address space used by some of the devices

@@ -26,6 +26,7 @@
 #include "hw/char/xilinx_uartlite.h"
 #include "hw/misc/unimp.h"
 #include "hw/riscv/machines-qom.h"
+#include "hw/riscv/virt.h"
 
 #define LMB_BRAM_SIZE (128 * KiB)
 #define MEMORY_BASEADDR 0x80000000
@@ -183,7 +184,7 @@ static void mb_v_generic_machine_init(MachineClass *mc)
     mc->init = mb_v_generic_init;
     mc->min_cpus = 1;
     mc->max_cpus = 1;
-    mc->default_cpu_type = TYPE_RISCV_CPU_BASE;
+    mc->default_cpu_type = virt_default_cpu_type();
     mc->default_cpus = 1;
 }
 
