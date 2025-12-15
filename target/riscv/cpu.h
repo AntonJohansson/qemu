@@ -563,6 +563,7 @@ typedef struct RISCVCPUDef {
     int32_t vext_spec;
     RISCVCPUConfig cfg;
     bool bare;
+    uint8_t irq_local_guest_max;
     const RISCVCSR *custom_csrs;
 } RISCVCPUDef;
 

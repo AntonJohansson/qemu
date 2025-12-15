@@ -1017,6 +1017,7 @@ void riscv_add_satp_mode_properties(Object *obj)
 
 static void riscv_cpu_set_irq(void *opaque, int irq, int level)
 {
+    RISCVCPUClass *mcc = RISCV_CPU_GET_CLASS(opaque);
     RISCVCPU *cpu = RISCV_CPU(opaque);
     CPURISCVState *env = &cpu->env;
 
@@ -1051,7 +1052,7 @@ static void riscv_cpu_set_irq(void *opaque, int irq, int level)
         default:
             g_assert_not_reached();
         }
-    } else if (irq < (IRQ_LOCAL_MAX + IRQ_LOCAL_GUEST_MAX)) {
+    } else if (irq < (IRQ_LOCAL_MAX + mcc->def->irq_local_guest_max)) {
         /* Require H-extension for handling guest local interrupts */
         if (!riscv_has_ext(env, RVH)) {
             g_assert_not_reached();
@@ -1098,7 +1099,7 @@ static void riscv_cpu_init(Object *obj)
 
 #ifndef CONFIG_USER_ONLY
     qdev_init_gpio_in(DEVICE(obj), riscv_cpu_set_irq,
-                      IRQ_LOCAL_MAX + IRQ_LOCAL_GUEST_MAX);
+                      IRQ_LOCAL_MAX + mcc->def->irq_local_guest_max);
     qdev_init_gpio_in_named(DEVICE(cpu), riscv_cpu_set_nmi,
                             "riscv.cpu.rnmi", RNMI_MAX);
 #endif /* CONFIG_USER_ONLY */
@@ -2794,6 +2795,15 @@ static void riscv_cpu_class_base_init(ObjectClass *c, const void *data)
     } else {
         mcc->def = g_new0(RISCVCPUDef, 1);
     }
+
+    /*
+     * RISCVCPUDef::irq_local_guest_max is initialized to 
+     * `target_long_bits()-1` due to bit zero of hgeip and hgeie
+     * being ROZ.
+     *
+     * This value does not vary between CPU types.
+     */
+    mcc->def->irq_local_guest_max = target_long_bits() - 1;
 
     if (data) {
         const RISCVCPUDef *def = data;
