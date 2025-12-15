@@ -22,6 +22,7 @@
 #include "qemu/timer.h"
 #include "cpu.h"
 #include "pmu.h"
+#include "target/riscv/csr.h"
 #include "exec/icount.h"
 #include "system/device_tree.h"
 
