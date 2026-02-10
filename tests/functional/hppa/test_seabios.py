@@ -29,6 +29,9 @@ class HppaSeabios(QemuSystemTest):
 
     def test_hppa_64(self):
         self.set_machine('C3700')
+        # SeaBIOS for C3700 currently uses a 40 bit physical address space,
+        # use the PA-8600 CPU instead of the default PA-8700.
+        self.cpu = 'pa-8600'
         self.boot_seabios()
 
 if __name__ == '__main__':

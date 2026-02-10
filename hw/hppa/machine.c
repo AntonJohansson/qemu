@@ -689,9 +689,9 @@ static AstroState *astro_init(void)
 }
 
 /*
- * Create HP C3700 workstation
+ * Create HP C3000 series workstation
  */
-static void machine_HP_C3700_init(MachineState *machine)
+static void machine_HP_C3000_init(MachineState *machine)
 {
     PCIBus *pci_bus;
     AstroState *astro;
@@ -804,9 +804,30 @@ static void HP_B160L_machine_init_class_init(ObjectClass *oc, const void *data)
     mc->default_ram_size = 512 * MiB;
 }
 
-static void HP_C3700_machine_init_class_init(ObjectClass *oc, const void *data)
+static void HP_C3600_machine_init_class_init(ObjectClass *oc, const void *data)
 {
     static const char * const valid_cpu_types[] = {
+        TYPE_HPPA_CPU_PA_8600,
+        NULL
+    };
+    MachineClass *mc = MACHINE_CLASS(oc);
+
+    mc->desc = "HP C3600 workstation";
+    mc->default_cpu_type = TYPE_HPPA_CPU_PA_8600;
+    mc->valid_cpu_types = valid_cpu_types;
+    mc->init = machine_HP_C3000_init;
+    mc->max_cpus = HPPA_MAX_CPUS;
+    mc->default_ram_size = 1024 * MiB;
+}
+
+static void HP_C3700_machine_init_class_init(ObjectClass *oc, const void *data)
+{
+    /*
+     * SeaBIOS for C3700 currently uses a 40 bit physical address space,
+     * allow use of use the PA-8600.
+     */
+    static const char * const valid_cpu_types[] = {
+        TYPE_HPPA_CPU_PA_8600,
         TYPE_HPPA_CPU_PA_8700,
         NULL
     };
@@ -815,7 +836,7 @@ static void HP_C3700_machine_init_class_init(ObjectClass *oc, const void *data)
     mc->desc = "HP C3700 workstation";
     mc->default_cpu_type = TYPE_HPPA_CPU_PA_8700;
     mc->valid_cpu_types = valid_cpu_types;
-    mc->init = machine_HP_C3700_init;
+    mc->init = machine_HP_C3000_init;
     mc->max_cpus = HPPA_MAX_CPUS;
     mc->default_ram_size = 1024 * MiB;
 }
@@ -855,15 +876,23 @@ static const TypeInfo hppa_machine_types[] = {
             { TYPE_NMI },
             { }
         },
-    }, {
+    },
+    {
         .name = MACHINE_TYPE_NAME("B160L"),
         .parent = TYPE_HPPA_COMMON_MACHINE,
         .class_init = HP_B160L_machine_init_class_init,
-    }, {
+    },
+    {
+        .name = MACHINE_TYPE_NAME("C3600"),
+        .parent = TYPE_HPPA_COMMON_MACHINE,
+        .class_init = HP_C3600_machine_init_class_init,
+    },
+    {
         .name = MACHINE_TYPE_NAME("C3700"),
         .parent = TYPE_HPPA_COMMON_MACHINE,
         .class_init = HP_C3700_machine_init_class_init,
-    }, {
+    },
+    {
         .name = MACHINE_TYPE_NAME("715"),
         .parent = TYPE_HPPA_COMMON_MACHINE,
         .class_init = HP_715_machine_init_class_init,
