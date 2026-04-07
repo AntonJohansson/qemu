@@ -3724,6 +3724,7 @@ target_modules = {}
 plugin_modules = []
 hw_arch = {}
 target_arch = {}
+target_dup_arch = {}
 target_system_arch = {}
 target_user_arch = {}
 hw_common_arch = {}
@@ -4241,6 +4242,32 @@ if host_os == 'darwin'
   entitlement = find_program('scripts/entitlement.sh')
 endif
 
+lib_dup = {}
+foreach target : target_dirs
+  config_target = config_target_mak[target]
+  target_name = config_target['TARGET_NAME']
+  target_base_arch = config_target['TARGET_BASE_ARCH']
+  c_args = ['-DCOMPILING_PER_TARGET',
+            '-DCONFIG_TARGET="@0@-config-target.h"'.format(target),
+  ]
+  target_inc = [include_directories('target' / config_target['TARGET_BASE_ARCH'])]
+  if host_os == 'linux'
+    target_inc += include_directories('linux-headers', is_system: true)
+  endif
+  if target.endswith('-softmmu')
+    if target_base_arch in target_dup_arch
+      t = target_dup_arch[target_base_arch].apply(config_target, strict: false)
+      lib = static_library('qemu-dup-' + target,
+                     sources: t.sources(),
+                     dependencies: t.dependencies(),
+                     include_directories: target_inc,
+                     c_args: c_args,
+                     build_by_default: true)
+      lib_dup += { target_base_arch: lib_dup.get(target_base_arch, []) + [lib.extract_objects(t.sources())]}
+    endif
+  endif
+endforeach
+
 traceable = []
 emulators = {}
 foreach target : target_dirs
@@ -4282,6 +4309,11 @@ foreach target : target_dirs
     target_inc += common_user_inc
     if target_base_arch in target_user_arch
       t = target_user_arch[target_base_arch].apply(config_target, strict: false)
+      arch_srcs += t.sources()
+      arch_deps += t.dependencies()
+    endif
+    if target_base_arch in target_dup_arch
+      t = target_dup_arch[target_base_arch].apply(config_target, strict: false)
       arch_srcs += t.sources()
       arch_deps += t.dependencies()
     endif
@@ -4336,6 +4368,9 @@ foreach target : target_dirs
   if target_type == 'system'
     src = system_ss.apply(config_target, strict: false)
     objects += libsystem.extract_objects(src.sources())
+    foreach obj : lib_dup[target_base_arch]
+      objects += obj
+    endforeach
     arch_deps += src.dependencies()
   endif
   if target_type == 'user'
