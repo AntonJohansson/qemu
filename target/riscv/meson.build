@@ -7,6 +7,7 @@ gen = [
   decodetree.process('xmips.decode', extra_args: '--static-decode=decode_xmips'),
 ]
 
+riscv_dup_ss = ss.source_set()
 riscv_ss = ss.source_set()
 riscv_ss.add(gen)
 
@@ -15,19 +16,23 @@ riscv_ss.add(when: 'CONFIG_ARM_COMPATIBLE_SEMIHOSTING',
 
 riscv_ss.add(files(
   'cpu.c',
-  'cpu_helper.c',
   'csr.c',
-  'fpu_helper.c',
   'gdbstub.c',
-  'op_helper.c',
-  'vector_helper.c',
   'vector_internals.c',
-  'bitmanip_helper.c',
   'translate.c',
+  'cpu_helper.c',
+  'dummy.c',
+))
+
+riscv_dup_ss.add(files(
+  'op_helper.c',
   'm128_helper.c',
-  'crypto_helper.c',
+  'vector_helper.c',
+  'fpu_helper.c',
   'zce_helper.c',
-  'vcrypto_helper.c'
+  'crypto_helper.c',
+  'vcrypto_helper.c',
+  'bitmanip_helper.c',
 ))
 
 riscv_system_ss = ss.source_set()
@@ -48,4 +53,5 @@ subdir('tcg')
 subdir('kvm')
 
 target_arch += {'riscv': riscv_ss}
+target_dup_arch += {'riscv' : riscv_dup_ss}
 target_system_arch += {'riscv': riscv_system_ss}

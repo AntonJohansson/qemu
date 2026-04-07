@@ -4458,64 +4458,6 @@ GEN_VEXT_CMP_VF(vmfge_vf_h, uint16_t, H2, vmfge16)
 GEN_VEXT_CMP_VF(vmfge_vf_w, uint32_t, H4, vmfge32)
 GEN_VEXT_CMP_VF(vmfge_vf_d, uint64_t, H8, vmfge64)
 
-/* Vector Floating-Point Classify Instruction */
-target_ulong fclass_h(uint64_t frs1)
-{
-    float16 f = frs1;
-    bool sign = float16_is_neg(f);
-
-    if (float16_is_infinity(f)) {
-        return sign ? 1 << 0 : 1 << 7;
-    } else if (float16_is_zero(f)) {
-        return sign ? 1 << 3 : 1 << 4;
-    } else if (float16_is_zero_or_denormal(f)) {
-        return sign ? 1 << 2 : 1 << 5;
-    } else if (float16_is_any_nan(f)) {
-        float_status s = { }; /* for snan_bit_is_one */
-        return float16_is_quiet_nan(f, &s) ? 1 << 9 : 1 << 8;
-    } else {
-        return sign ? 1 << 1 : 1 << 6;
-    }
-}
-
-target_ulong fclass_s(uint64_t frs1)
-{
-    float32 f = frs1;
-    bool sign = float32_is_neg(f);
-
-    if (float32_is_infinity(f)) {
-        return sign ? 1 << 0 : 1 << 7;
-    } else if (float32_is_zero(f)) {
-        return sign ? 1 << 3 : 1 << 4;
-    } else if (float32_is_zero_or_denormal(f)) {
-        return sign ? 1 << 2 : 1 << 5;
-    } else if (float32_is_any_nan(f)) {
-        float_status s = { }; /* for snan_bit_is_one */
-        return float32_is_quiet_nan(f, &s) ? 1 << 9 : 1 << 8;
-    } else {
-        return sign ? 1 << 1 : 1 << 6;
-    }
-}
-
-target_ulong fclass_d(uint64_t frs1)
-{
-    float64 f = frs1;
-    bool sign = float64_is_neg(f);
-
-    if (float64_is_infinity(f)) {
-        return sign ? 1 << 0 : 1 << 7;
-    } else if (float64_is_zero(f)) {
-        return sign ? 1 << 3 : 1 << 4;
-    } else if (float64_is_zero_or_denormal(f)) {
-        return sign ? 1 << 2 : 1 << 5;
-    } else if (float64_is_any_nan(f)) {
-        float_status s = { }; /* for snan_bit_is_one */
-        return float64_is_quiet_nan(f, &s) ? 1 << 9 : 1 << 8;
-    } else {
-        return sign ? 1 << 1 : 1 << 6;
-    }
-}
-
 RVVCALL(OPIVV1, vfclass_v_h, OP_UU_H, H2, H2, fclass_h)
 RVVCALL(OPIVV1, vfclass_v_w, OP_UU_W, H4, H4, fclass_s)
 RVVCALL(OPIVV1, vfclass_v_d, OP_UU_D, H8, H8, fclass_d)
