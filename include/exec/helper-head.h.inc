@@ -8,7 +8,16 @@
 
 #include "fpu/softfloat-types.h"
 
-#define HELPER(name) glue(helper_, name)
+#ifdef COMPILING_PER_TARGET
+# define HELPER_NAME(name) glue(name, glue(_tl, TARGET_LONG_BITS))
+#else
+# define HELPER_NAME(name) name
+#endif /* COMPILING_PER_TARGET */
+
+#define HELPER(name) glue(helper_, HELPER_NAME(name))
+
+#define HELPER_INFO(name) \
+    glue(helper_info_, HELPER_NAME(name))
 
 /* Some types that make sense in C, but not for TCG.  */
 #define dh_alias_i32 i32
