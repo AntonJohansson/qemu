@@ -114,7 +114,7 @@ static RISCVException ctr(CPURISCVState *env, int csrno)
 #if !defined(CONFIG_USER_ONLY)
     RISCVCPU *cpu = env_archcpu(env);
     int ctr_index;
-    target_ulong ctr_mask;
+    uint64_t ctr_mask;
     int base_csrno = CSR_CYCLE;
     bool rv32 = riscv_cpu_mxl(env) == MXL_RV32 ? true : false;
 
@@ -843,14 +843,14 @@ static RISCVException seed(CPURISCVState *env, int csrno)
 
 /* zicfiss CSR_SSP read and write */
 static RISCVException read_ssp(CPURISCVState *env, int csrno,
-                               target_ulong *val)
+                               uint64_t *val)
 {
     *val = env->ssp;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_ssp(CPURISCVState *env, int csrno,
-                                target_ulong val, uintptr_t ra)
+                                uint64_t val, uintptr_t ra)
 {
     env->ssp = val;
     return RISCV_EXCP_NONE;
@@ -858,14 +858,14 @@ static RISCVException write_ssp(CPURISCVState *env, int csrno,
 
 /* User Floating-Point CSRs */
 static RISCVException read_fflags(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = riscv_cpu_get_fflags(env);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_fflags(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
 #if !defined(CONFIG_USER_ONLY)
     if (riscv_has_ext(env, RVF)) {
@@ -877,14 +877,14 @@ static RISCVException write_fflags(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_frm(CPURISCVState *env, int csrno,
-                               target_ulong *val)
+                               uint64_t *val)
 {
     *val = env->frm;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_frm(CPURISCVState *env, int csrno,
-                                target_ulong val, uintptr_t ra)
+                                uint64_t val, uintptr_t ra)
 {
 #if !defined(CONFIG_USER_ONLY)
     if (riscv_has_ext(env, RVF)) {
@@ -896,7 +896,7 @@ static RISCVException write_frm(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_fcsr(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
     /*
      * This is an 8-bit operation, fflags make up the lower 5 bits and
@@ -908,7 +908,7 @@ static RISCVException read_fcsr(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_fcsr(CPURISCVState *env, int csrno,
-                                 target_ulong val, uintptr_t ra)
+                                 uint64_t val, uintptr_t ra)
 {
 #if !defined(CONFIG_USER_ONLY)
     if (riscv_has_ext(env, RVF)) {
@@ -921,7 +921,7 @@ static RISCVException write_fcsr(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_vtype(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     uint64_t vill;
     switch (env->xl) {
@@ -934,33 +934,33 @@ static RISCVException read_vtype(CPURISCVState *env, int csrno,
     default:
         g_assert_not_reached();
     }
-    *val = (target_ulong)vill | env->vtype;
+    *val = (uint64_t)vill | env->vtype;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_vl(CPURISCVState *env, int csrno,
-                              target_ulong *val)
+                              uint64_t *val)
 {
     *val = env->vl;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_vlenb(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = riscv_cpu_cfg(env)->vlenb;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_vxrm(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
     *val = env->vxrm;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vxrm(CPURISCVState *env, int csrno,
-                                 target_ulong val, uintptr_t ra)
+                                 uint64_t val, uintptr_t ra)
 {
 #if !defined(CONFIG_USER_ONLY)
     env->mstatus |= MSTATUS_VS;
@@ -970,14 +970,14 @@ static RISCVException write_vxrm(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_vxsat(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->vxsat & BIT(0);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vxsat(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
 #if !defined(CONFIG_USER_ONLY)
     env->mstatus |= MSTATUS_VS;
@@ -987,14 +987,14 @@ static RISCVException write_vxsat(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_vstart(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = env->vstart;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vstart(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
 #if !defined(CONFIG_USER_ONLY)
     env->mstatus |= MSTATUS_VS;
@@ -1008,14 +1008,14 @@ static RISCVException write_vstart(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_vcsr(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
     *val = (env->vxrm << VCSR_VXRM_SHIFT) | (env->vxsat << VCSR_VXSAT_SHIFT);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vcsr(CPURISCVState *env, int csrno,
-                                 target_ulong val, uintptr_t ra)
+                                 uint64_t val, uintptr_t ra)
 {
 #if !defined(CONFIG_USER_ONLY)
     env->mstatus |= MSTATUS_VS;
@@ -1027,37 +1027,37 @@ static RISCVException write_vcsr(CPURISCVState *env, int csrno,
 
 #if defined(CONFIG_USER_ONLY)
 /* User Timers and Counters */
-static target_ulong get_ticks(bool shift)
+static uint64_t get_ticks(bool shift)
 {
     int64_t val = cpu_get_host_ticks();
-    target_ulong result = shift ? val >> 32 : val;
+    uint64_t result = shift ? val >> 32 : val;
 
     return result;
 }
 
 static RISCVException read_time(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
     *val = cpu_get_host_ticks();
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_timeh(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = cpu_get_host_ticks() >> 32;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_hpmcounter(CPURISCVState *env, int csrno,
-                                      target_ulong *val)
+                                      uint64_t *val)
 {
     *val = get_ticks(false);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_hpmcounterh(CPURISCVState *env, int csrno,
-                                       target_ulong *val)
+                                       uint64_t *val)
 {
     *val = get_ticks(true);
     return RISCV_EXCP_NONE;
@@ -1066,7 +1066,7 @@ static RISCVException read_hpmcounterh(CPURISCVState *env, int csrno,
 #else /* CONFIG_USER_ONLY */
 
 static RISCVException read_mcyclecfg(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     bool rv32 = riscv_cpu_mxl(env) == MXL_RV32;
     *val = extract64(env->mcyclecfg, 0, rv32 ? 32 : 64);
@@ -1074,7 +1074,7 @@ static RISCVException read_mcyclecfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mcyclecfg(CPURISCVState *env, int csrno,
-                                      target_ulong val, uintptr_t ra)
+                                      uint64_t val, uintptr_t ra)
 {
     uint64_t inh_avail_mask;
 
@@ -1096,16 +1096,16 @@ static RISCVException write_mcyclecfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_mcyclecfgh(CPURISCVState *env, int csrno,
-                                      target_ulong *val)
+                                      uint64_t *val)
 {
     *val = extract64(env->mcyclecfg, 32, 32);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mcyclecfgh(CPURISCVState *env, int csrno,
-                                       target_ulong val, uintptr_t ra)
+                                       uint64_t val, uintptr_t ra)
 {
-    target_ulong inh_avail_mask = (target_ulong)(~MHPMEVENTH_FILTER_MASK |
+    uint64_t inh_avail_mask = (uint64_t)(~MHPMEVENTH_FILTER_MASK |
                                                  MCYCLECFGH_BIT_MINH);
 
     /* Set xINH fields if priv mode supported */
@@ -1121,7 +1121,7 @@ static RISCVException write_mcyclecfgh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_minstretcfg(CPURISCVState *env, int csrno,
-                                       target_ulong *val)
+                                       uint64_t *val)
 {
     bool rv32 = riscv_cpu_mxl(env) == MXL_RV32;
     *val = extract64(env->minstretcfg, 0, rv32 ? 32 : 64);
@@ -1129,7 +1129,7 @@ static RISCVException read_minstretcfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_minstretcfg(CPURISCVState *env, int csrno,
-                                        target_ulong val, uintptr_t ra)
+                                        uint64_t val, uintptr_t ra)
 {
     uint64_t inh_avail_mask;
 
@@ -1149,16 +1149,16 @@ static RISCVException write_minstretcfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_minstretcfgh(CPURISCVState *env, int csrno,
-                                        target_ulong *val)
+                                        uint64_t *val)
 {
     *val = extract64(env->minstretcfg, 32, 32);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_minstretcfgh(CPURISCVState *env, int csrno,
-                                         target_ulong val, uintptr_t ra)
+                                         uint64_t val, uintptr_t ra)
 {
-    target_ulong inh_avail_mask = (target_ulong)(~MHPMEVENTH_FILTER_MASK |
+    uint64_t inh_avail_mask = (uint64_t)(~MHPMEVENTH_FILTER_MASK |
                                                  MINSTRETCFGH_BIT_MINH);
 
     inh_avail_mask |= riscv_has_ext(env, RVU) ? MINSTRETCFGH_BIT_UINH : 0;
@@ -1174,7 +1174,7 @@ static RISCVException write_minstretcfgh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_mhpmevent(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     int evt_index = csrno - CSR_MCOUNTINHIBIT;
     bool rv32 = riscv_cpu_mxl(env) == MXL_RV32;
@@ -1185,7 +1185,7 @@ static RISCVException read_mhpmevent(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mhpmevent(CPURISCVState *env, int csrno,
-                                      target_ulong val, uintptr_t ra)
+                                      uint64_t val, uintptr_t ra)
 {
     int evt_index = csrno - CSR_MCOUNTINHIBIT;
     uint64_t mhpmevt_val;
@@ -1211,7 +1211,7 @@ static RISCVException write_mhpmevent(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_mhpmeventh(CPURISCVState *env, int csrno,
-                                      target_ulong *val)
+                                      uint64_t *val)
 {
     int evt_index = csrno - CSR_MHPMEVENT3H + 3;
 
@@ -1221,10 +1221,10 @@ static RISCVException read_mhpmeventh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mhpmeventh(CPURISCVState *env, int csrno,
-                                       target_ulong val, uintptr_t ra)
+                                       uint64_t val, uintptr_t ra)
 {
     int evt_index = csrno - CSR_MHPMEVENT3H + 3;
-    target_ulong inh_avail_mask = (target_ulong)(~MHPMEVENTH_FILTER_MASK |
+    uint64_t inh_avail_mask = (uint64_t)(~MHPMEVENTH_FILTER_MASK |
                                                   MHPMEVENTH_BIT_MINH);
 
     inh_avail_mask |= riscv_has_ext(env, RVU) ? MHPMEVENTH_BIT_UINH : 0;
@@ -1296,7 +1296,7 @@ static uint64_t riscv_pmu_ctr_get_fixed_counters_val(CPURISCVState *env,
     return curr_val;
 }
 
-static RISCVException riscv_pmu_write_ctr(CPURISCVState *env, target_ulong val,
+static RISCVException riscv_pmu_write_ctr(CPURISCVState *env, uint64_t val,
                                           uint32_t ctr_idx)
 {
     PMUCTRState *counter = &env->pmu_ctrs[ctr_idx];
@@ -1326,7 +1326,7 @@ static RISCVException riscv_pmu_write_ctr(CPURISCVState *env, target_ulong val,
     return RISCV_EXCP_NONE;
 }
 
-static RISCVException riscv_pmu_write_ctrh(CPURISCVState *env, target_ulong val,
+static RISCVException riscv_pmu_write_ctrh(CPURISCVState *env, uint64_t val,
                                           uint32_t ctr_idx)
 {
     PMUCTRState *counter = &env->pmu_ctrs[ctr_idx];
@@ -1352,7 +1352,7 @@ static RISCVException riscv_pmu_write_ctrh(CPURISCVState *env, target_ulong val,
 }
 
 static RISCVException write_mhpmcounter(CPURISCVState *env, int csrno,
-                                        target_ulong val, uintptr_t ra)
+                                        uint64_t val, uintptr_t ra)
 {
     int ctr_idx = csrno - CSR_MCYCLE;
 
@@ -1360,14 +1360,14 @@ static RISCVException write_mhpmcounter(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mhpmcounterh(CPURISCVState *env, int csrno,
-                                         target_ulong val, uintptr_t ra)
+                                         uint64_t val, uintptr_t ra)
 {
     int ctr_idx = csrno - CSR_MCYCLEH;
 
     return riscv_pmu_write_ctrh(env, val, ctr_idx);
 }
 
-RISCVException riscv_pmu_read_ctr(CPURISCVState *env, target_ulong *val,
+RISCVException riscv_pmu_read_ctr(CPURISCVState *env, uint64_t *val,
                                   bool upper_half, uint32_t ctr_idx)
 {
     PMUCTRState *counter = &env->pmu_ctrs[ctr_idx];
@@ -1407,7 +1407,7 @@ RISCVException riscv_pmu_read_ctr(CPURISCVState *env, target_ulong *val,
 }
 
 static RISCVException read_hpmcounter(CPURISCVState *env, int csrno,
-                                      target_ulong *val)
+                                      uint64_t *val)
 {
     uint16_t ctr_index;
 
@@ -1423,7 +1423,7 @@ static RISCVException read_hpmcounter(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_hpmcounterh(CPURISCVState *env, int csrno,
-                                       target_ulong *val)
+                                       uint64_t *val)
 {
     uint16_t ctr_index;
 
@@ -1439,8 +1439,8 @@ static RISCVException read_hpmcounterh(CPURISCVState *env, int csrno,
 }
 
 static int rmw_cd_mhpmcounter(CPURISCVState *env, int ctr_idx,
-                              target_ulong *val, target_ulong new_val,
-                              target_ulong wr_mask)
+                              uint64_t *val, uint64_t new_val,
+                              uint64_t wr_mask)
 {
     if (wr_mask != 0 && wr_mask != -1) {
         return -EINVAL;
@@ -1458,8 +1458,8 @@ static int rmw_cd_mhpmcounter(CPURISCVState *env, int ctr_idx,
 }
 
 static int rmw_cd_mhpmcounterh(CPURISCVState *env, int ctr_idx,
-                               target_ulong *val, target_ulong new_val,
-                               target_ulong wr_mask)
+                               uint64_t *val, uint64_t new_val,
+                               uint64_t wr_mask)
 {
     if (wr_mask != 0 && wr_mask != -1) {
         return -EINVAL;
@@ -1477,7 +1477,7 @@ static int rmw_cd_mhpmcounterh(CPURISCVState *env, int ctr_idx,
 }
 
 static int rmw_cd_mhpmevent(CPURISCVState *env, int evt_index,
-                            target_ulong *val, target_ulong new_val,
+                            uint64_t *val, uint64_t new_val,
                             uint64_t wr_mask)
 {
     uint64_t mhpmevt_val = env->mhpmevent_val[evt_index];
@@ -1505,8 +1505,8 @@ static int rmw_cd_mhpmevent(CPURISCVState *env, int evt_index,
 }
 
 static int rmw_cd_mhpmeventh(CPURISCVState *env, int evt_index,
-                             target_ulong *val, target_ulong new_val,
-                             target_ulong wr_mask)
+                             uint64_t *val, uint64_t new_val,
+                             uint64_t wr_mask)
 {
     uint64_t mhpmevt_val = env->mhpmevent_val[evt_index];
     uint32_t mhpmevth_val = extract64(mhpmevt_val, 32, 32);
@@ -1533,8 +1533,8 @@ static int rmw_cd_mhpmeventh(CPURISCVState *env, int evt_index,
     return 0;
 }
 
-static int rmw_cd_ctr_cfg(CPURISCVState *env, int cfg_index, target_ulong *val,
-                          target_ulong new_val, uint64_t wr_mask)
+static int rmw_cd_ctr_cfg(CPURISCVState *env, int cfg_index, uint64_t *val,
+                          uint64_t new_val, uint64_t wr_mask)
 {
     /*
      * wr_mask is 64-bit so upper 32 bits of mcyclecfg and minstretcfg
@@ -1564,8 +1564,8 @@ static int rmw_cd_ctr_cfg(CPURISCVState *env, int cfg_index, target_ulong *val,
     return 0;
 }
 
-static int rmw_cd_ctr_cfgh(CPURISCVState *env, int cfg_index, target_ulong *val,
-                           target_ulong new_val, target_ulong wr_mask)
+static int rmw_cd_ctr_cfgh(CPURISCVState *env, int cfg_index, uint64_t *val,
+                           uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t cfgh;
 
@@ -1602,7 +1602,7 @@ static int rmw_cd_ctr_cfgh(CPURISCVState *env, int cfg_index, target_ulong *val,
 
 
 static RISCVException read_scountovf(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     int mhpmevt_start = CSR_MHPMEVENT3 - CSR_MCOUNTINHIBIT;
     int i;
@@ -1627,7 +1627,7 @@ static RISCVException read_scountovf(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_time(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
     uint64_t delta = env->virt_enabled ? env->htimedelta : 0;
 
@@ -1640,7 +1640,7 @@ static RISCVException read_time(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_timeh(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     uint64_t delta = env->virt_enabled ? env->htimedelta : 0;
 
@@ -1653,7 +1653,7 @@ static RISCVException read_timeh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_vstimecmp(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     *val = env->vstimecmp;
 
@@ -1661,7 +1661,7 @@ static RISCVException read_vstimecmp(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_vstimecmph(CPURISCVState *env, int csrno,
-                                      target_ulong *val)
+                                      uint64_t *val)
 {
     *val = env->vstimecmp >> 32;
 
@@ -1669,7 +1669,7 @@ static RISCVException read_vstimecmph(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_vstimecmp(CPURISCVState *env, int csrno,
-                                      target_ulong val, uintptr_t ra)
+                                      uint64_t val, uintptr_t ra)
 {
     if (riscv_cpu_mxl(env) == MXL_RV32) {
         env->vstimecmp = deposit64(env->vstimecmp, 0, 32, (uint64_t)val);
@@ -1684,7 +1684,7 @@ static RISCVException write_vstimecmp(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_vstimecmph(CPURISCVState *env, int csrno,
-                                       target_ulong val, uintptr_t ra)
+                                       uint64_t val, uintptr_t ra)
 {
     env->vstimecmp = deposit64(env->vstimecmp, 32, 32, (uint64_t)val);
     riscv_timer_write_timecmp(env, env->vstimer, env->vstimecmp,
@@ -1694,7 +1694,7 @@ static RISCVException write_vstimecmph(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_stimecmp(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     if (env->virt_enabled) {
         *val = env->vstimecmp;
@@ -1706,7 +1706,7 @@ static RISCVException read_stimecmp(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_stimecmph(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     if (env->virt_enabled) {
         *val = env->vstimecmp >> 32;
@@ -1718,7 +1718,7 @@ static RISCVException read_stimecmph(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_stimecmp(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     if (env->virt_enabled) {
         if (env->hvictl & HVICTL_VTI) {
@@ -1739,7 +1739,7 @@ static RISCVException write_stimecmp(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_stimecmph(CPURISCVState *env, int csrno,
-                                      target_ulong val, uintptr_t ra)
+                                      uint64_t val, uintptr_t ra)
 {
     if (env->virt_enabled) {
         if (env->hvictl & HVICTL_VTI) {
@@ -1791,7 +1791,7 @@ static const uint64_t all_ints = M_MODE_INTERRUPTS | S_MODE_INTERRUPTS |
                          (1ULL << (RISCV_EXCP_LOAD_GUEST_ACCESS_FAULT)) | \
                          (1ULL << (RISCV_EXCP_VIRT_INSTRUCTION_FAULT)) | \
                          (1ULL << (RISCV_EXCP_STORE_GUEST_AMO_ACCESS_FAULT)))
-static const target_ulong vs_delegable_excps = DELEGABLE_EXCPS &
+static const uint64_t vs_delegable_excps = DELEGABLE_EXCPS &
     ~((1ULL << (RISCV_EXCP_S_ECALL)) |
       (1ULL << (RISCV_EXCP_VS_ECALL)) |
       (1ULL << (RISCV_EXCP_M_ECALL)) |
@@ -1799,7 +1799,7 @@ static const target_ulong vs_delegable_excps = DELEGABLE_EXCPS &
       (1ULL << (RISCV_EXCP_LOAD_GUEST_ACCESS_FAULT)) |
       (1ULL << (RISCV_EXCP_VIRT_INSTRUCTION_FAULT)) |
       (1ULL << (RISCV_EXCP_STORE_GUEST_AMO_ACCESS_FAULT)));
-static const target_ulong sstatus_v1_10_mask = SSTATUS_SIE | SSTATUS_SPIE |
+static const uint64_t sstatus_v1_10_mask = SSTATUS_SIE | SSTATUS_SPIE |
     SSTATUS_UIE | SSTATUS_UPIE | SSTATUS_SPP | SSTATUS_FS | SSTATUS_XS |
     SSTATUS_SUM | SSTATUS_MXR | SSTATUS_VS;
 
@@ -1843,41 +1843,41 @@ const bool valid_vm_1_10_64[16] = {
 
 /* Machine Information Registers */
 static RISCVException read_zero(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
     *val = 0;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_ignore(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mvendorid(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     *val = riscv_cpu_cfg(env)->mvendorid;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_marchid(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = riscv_cpu_cfg(env)->marchid;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mimpid(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = riscv_cpu_cfg(env)->mimpid;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mhartid(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = env->mhartid;
     return RISCV_EXCP_NONE;
@@ -1906,13 +1906,13 @@ static uint64_t add_status_sd(RISCVMXL xl, uint64_t status)
 }
 
 static RISCVException read_mstatus(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = add_status_sd(riscv_cpu_mxl(env), env->mstatus);
     return RISCV_EXCP_NONE;
 }
 
-static bool validate_vm(CPURISCVState *env, target_ulong vm)
+static bool validate_vm(CPURISCVState *env, uint64_t vm)
 {
     bool rv32 = riscv_cpu_mxl(env) == MXL_RV32;
     RISCVCPU *cpu = env_archcpu(env);
@@ -1923,10 +1923,10 @@ static bool validate_vm(CPURISCVState *env, target_ulong vm)
     return vm <= satp_mode_supported_max && valid_vm[vm];
 }
 
-static target_ulong legalize_xatp(CPURISCVState *env, target_ulong old_xatp,
-                                  target_ulong val)
+static uint64_t legalize_xatp(CPURISCVState *env, uint64_t old_xatp,
+                                  uint64_t val)
 {
-    target_ulong mask;
+    uint64_t mask;
     bool vm;
     if (riscv_cpu_mxl(env) == MXL_RV32) {
         vm = validate_vm(env, get_field(val, SATP32_MODE));
@@ -1949,11 +1949,11 @@ static target_ulong legalize_xatp(CPURISCVState *env, target_ulong old_xatp,
     return old_xatp;
 }
 
-static target_ulong legalize_mpp(CPURISCVState *env, target_ulong old_mpp,
-                                 target_ulong val)
+static uint64_t legalize_mpp(CPURISCVState *env, uint64_t old_mpp,
+                                 uint64_t val)
 {
     bool valid = false;
-    target_ulong new_mpp = get_field(val, MSTATUS_MPP);
+    uint64_t new_mpp = get_field(val, MSTATUS_MPP);
 
     switch (new_mpp) {
     case PRV_M:
@@ -1976,7 +1976,7 @@ static target_ulong legalize_mpp(CPURISCVState *env, target_ulong old_mpp,
 }
 
 static RISCVException write_mstatus(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     uint64_t mstatus = env->mstatus;
     uint64_t mask = 0;
@@ -2049,14 +2049,14 @@ static RISCVException write_mstatus(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_mstatush(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     *val = env->mstatus >> 32;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mstatush(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     uint64_t valh = (uint64_t)val << 32;
     uint64_t mask = riscv_has_ext(env, RVH) ? MSTATUS_MPV | MSTATUS_GVA : 0;
@@ -2088,19 +2088,17 @@ static RISCVException read_misa_i128(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_misa(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
-    target_ulong misa;
+    uint64_t misa;
 
     switch (env->misa_mxl) {
     case MXL_RV32:
-        misa = (target_ulong)MXL_RV32 << 30;
+        misa = (uint64_t)MXL_RV32 << 30;
         break;
-#ifdef TARGET_RISCV64
     case MXL_RV64:
-        misa = (target_ulong)MXL_RV64 << 62;
+        misa = (uint64_t)MXL_RV64 << 62;
         break;
-#endif
     default:
         g_assert_not_reached();
     }
@@ -2109,7 +2107,7 @@ static RISCVException read_misa(CPURISCVState *env, int csrno,
     return RISCV_EXCP_NONE;
 }
 
-static target_ulong get_next_pc(CPURISCVState *env, uintptr_t ra)
+static uint64_t get_next_pc(CPURISCVState *env, uintptr_t ra)
 {
     uint64_t data[INSN_START_WORDS];
 
@@ -2123,7 +2121,7 @@ static target_ulong get_next_pc(CPURISCVState *env, uintptr_t ra)
 }
 
 static RISCVException write_misa(CPURISCVState *env, int csrno,
-                                 target_ulong val, uintptr_t ra)
+                                 uint64_t val, uintptr_t ra)
 {
     RISCVCPU *cpu = env_archcpu(env);
     uint32_t orig_misa_ext = env->misa_ext;
@@ -2175,14 +2173,14 @@ static RISCVException write_misa(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_medeleg(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = env->medeleg;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_medeleg(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     env->medeleg = (env->medeleg & ~DELEGABLE_EXCPS) | (val & DELEGABLE_EXCPS);
     return RISCV_EXCP_NONE;
@@ -2208,8 +2206,8 @@ static RISCVException rmw_mideleg64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_mideleg(CPURISCVState *env, int csrno,
-                                  target_ulong *ret_val,
-                                  target_ulong new_val, target_ulong wr_mask)
+                                  uint64_t *ret_val,
+                                  uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -2223,9 +2221,9 @@ static RISCVException rmw_mideleg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_midelegh(CPURISCVState *env, int csrno,
-                                   target_ulong *ret_val,
-                                   target_ulong new_val,
-                                   target_ulong wr_mask)
+                                   uint64_t *ret_val,
+                                   uint64_t new_val,
+                                   uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -2259,8 +2257,8 @@ static RISCVException rmw_mie64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_mie(CPURISCVState *env, int csrno,
-                              target_ulong *ret_val,
-                              target_ulong new_val, target_ulong wr_mask)
+                              uint64_t *ret_val,
+                              uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -2274,8 +2272,8 @@ static RISCVException rmw_mie(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_mieh(CPURISCVState *env, int csrno,
-                               target_ulong *ret_val,
-                               target_ulong new_val, target_ulong wr_mask)
+                               uint64_t *ret_val,
+                               uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -2305,8 +2303,8 @@ static RISCVException rmw_mvien64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_mvien(CPURISCVState *env, int csrno,
-                              target_ulong *ret_val,
-                              target_ulong new_val, target_ulong wr_mask)
+                              uint64_t *ret_val,
+                              uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -2320,8 +2318,8 @@ static RISCVException rmw_mvien(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_mvienh(CPURISCVState *env, int csrno,
-                                target_ulong *ret_val,
-                                target_ulong new_val, target_ulong wr_mask)
+                                uint64_t *ret_val,
+                                uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -2336,7 +2334,7 @@ static RISCVException rmw_mvienh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_mtopi(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     int irq;
     uint8_t iprio;
@@ -2398,8 +2396,8 @@ static int csrind_xlate_vs_csrno(CPURISCVState *env, int csrno)
 }
 
 static RISCVException rmw_xiselect(CPURISCVState *env, int csrno,
-                                   target_ulong *val, target_ulong new_val,
-                                   target_ulong wr_mask)
+                                   uint64_t *val, uint64_t new_val,
+                                   uint64_t wr_mask)
 {
     uint16_t *iselect;
     int ret;
@@ -2462,13 +2460,13 @@ static bool xiselect_ctr_range(int csrno, uint16_t isel)
            csrno < CSR_MIREG;
 }
 
-static int rmw_iprio(target_ulong xlen,
+static int rmw_iprio(uint64_t xlen,
                      uint16_t iselect, uint8_t *iprio,
-                     target_ulong *val, target_ulong new_val,
-                     target_ulong wr_mask, int ext_irq_no)
+                     uint64_t *val, uint64_t new_val,
+                     uint64_t wr_mask, int ext_irq_no)
 {
     int i, firq, nirqs;
-    target_ulong old_val;
+    uint64_t old_val;
 
     if (iselect < ISELECT_IPRIO0 || ISELECT_IPRIO15 < iselect) {
         return -EINVAL;
@@ -2482,7 +2480,7 @@ static int rmw_iprio(target_ulong xlen,
 
     old_val = 0;
     for (i = 0; i < nirqs; i++) {
-        old_val |= ((target_ulong)iprio[firq + i]) << (IPRIO_IRQ_BITS * i);
+        old_val |= ((uint64_t)iprio[firq + i]) << (IPRIO_IRQ_BITS * i);
     }
 
     if (val) {
@@ -2507,8 +2505,8 @@ static int rmw_iprio(target_ulong xlen,
     return 0;
 }
 
-static int rmw_ctrsource(CPURISCVState *env, uint16_t isel, target_ulong *val,
-                          target_ulong new_val, target_ulong wr_mask)
+static int rmw_ctrsource(CPURISCVState *env, uint16_t isel, uint64_t *val,
+                          uint64_t new_val, uint64_t wr_mask)
 {
     /*
      * CTR arrays are treated as circular buffers and TOS always points to next
@@ -2546,8 +2544,8 @@ static int rmw_ctrsource(CPURISCVState *env, uint16_t isel, target_ulong *val,
     return 0;
 }
 
-static int rmw_ctrtarget(CPURISCVState *env, uint16_t isel, target_ulong *val,
-                          target_ulong new_val, target_ulong wr_mask)
+static int rmw_ctrtarget(CPURISCVState *env, uint16_t isel, uint64_t *val,
+                          uint64_t new_val, uint64_t wr_mask)
 {
     /*
      * CTR arrays are treated as circular buffers and TOS always points to next
@@ -2585,8 +2583,8 @@ static int rmw_ctrtarget(CPURISCVState *env, uint16_t isel, target_ulong *val,
     return 0;
 }
 
-static int rmw_ctrdata(CPURISCVState *env, uint16_t isel, target_ulong *val,
-                        target_ulong new_val, target_ulong wr_mask)
+static int rmw_ctrdata(CPURISCVState *env, uint16_t isel, uint64_t *val,
+                        uint64_t new_val, uint64_t wr_mask)
 {
     /*
      * CTR arrays are treated as circular buffers and TOS always points to next
@@ -2626,13 +2624,13 @@ static int rmw_ctrdata(CPURISCVState *env, uint16_t isel, target_ulong *val,
 }
 
 static RISCVException rmw_xireg_aia(CPURISCVState *env, int csrno,
-                         uint16_t isel, target_ulong *val,
-                         target_ulong new_val, target_ulong wr_mask)
+                         uint16_t isel, uint64_t *val,
+                         uint64_t new_val, uint64_t wr_mask)
 {
     bool virt = false, isel_reserved = false;
     int ret = -EINVAL;
     uint8_t *iprio;
-    target_ulong priv, vgein;
+    uint64_t priv, vgein;
     uint64_t wide_val;
 
     /* VS-mode CSR number passed in has already been translated */
@@ -2708,8 +2706,8 @@ done:
 }
 
 static int rmw_xireg_cd(CPURISCVState *env, int csrno,
-                        uint16_t isel, target_ulong *val,
-                        target_ulong new_val, target_ulong wr_mask)
+                        uint16_t isel, uint64_t *val,
+                        uint64_t new_val, uint64_t wr_mask)
 {
     int ret = -EINVAL;
     uint16_t ctr_index = isel - ISELECT_CD_FIRST;
@@ -2780,8 +2778,8 @@ done:
 }
 
 static int rmw_xireg_ctr(CPURISCVState *env, int csrno,
-                        uint16_t isel, target_ulong *val,
-                        target_ulong new_val, target_ulong wr_mask)
+                        uint16_t isel, uint64_t *val,
+                        uint64_t new_val, uint64_t wr_mask)
 {
     if (!riscv_cpu_cfg(env)->ext_smctr && !riscv_cpu_cfg(env)->ext_ssctr) {
         return -EINVAL;
@@ -2808,8 +2806,8 @@ static int rmw_xireg_ctr(CPURISCVState *env, int csrno,
  * extension using csrind should be implemented here.
  */
 static int rmw_xireg_csrind(CPURISCVState *env, int csrno,
-                              uint16_t isel, target_ulong *val,
-                              target_ulong new_val, target_ulong wr_mask)
+                              uint16_t isel, uint64_t *val,
+                              uint64_t new_val, uint64_t wr_mask)
 {
     bool virt = csrno == CSR_VSIREG ? true : false;
     int ret = -EINVAL;
@@ -2834,8 +2832,8 @@ static int rmw_xireg_csrind(CPURISCVState *env, int csrno,
     return RISCV_EXCP_NONE;
 }
 
-static int rmw_xiregi(CPURISCVState *env, int csrno, target_ulong *val,
-                      target_ulong new_val, target_ulong wr_mask)
+static int rmw_xiregi(CPURISCVState *env, int csrno, uint64_t *val,
+                      uint64_t new_val, uint64_t wr_mask)
 {
     int ret = -EINVAL;
     uint16_t isel;
@@ -2865,8 +2863,8 @@ static int rmw_xiregi(CPURISCVState *env, int csrno, target_ulong *val,
 }
 
 static RISCVException rmw_xireg(CPURISCVState *env, int csrno,
-                                target_ulong *val, target_ulong new_val,
-                                target_ulong wr_mask)
+                                uint64_t *val, uint64_t new_val,
+                                uint64_t wr_mask)
 {
     int ret = -EINVAL;
     uint16_t isel;
@@ -2914,12 +2912,12 @@ done:
 }
 
 static RISCVException rmw_xtopei(CPURISCVState *env, int csrno,
-                                 target_ulong *val, target_ulong new_val,
-                                 target_ulong wr_mask)
+                                 uint64_t *val, uint64_t new_val,
+                                 uint64_t wr_mask)
 {
     bool virt;
     int ret = -EINVAL;
-    target_ulong priv, vgein;
+    uint64_t priv, vgein;
     uint64_t wide_val;
 
     /* Translate CSR number for VS-mode */
@@ -2974,14 +2972,14 @@ done:
 }
 
 static RISCVException read_mtvec(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->mtvec;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mtvec(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     /* bits [1:0] encode mode; 0 = direct, 1 = vectored, 2 >= reserved */
     if ((val & 3) < 2) {
@@ -2993,20 +2991,20 @@ static RISCVException write_mtvec(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_mcountinhibit(CPURISCVState *env, int csrno,
-                                         target_ulong *val)
+                                         uint64_t *val)
 {
     *val = env->mcountinhibit;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mcountinhibit(CPURISCVState *env, int csrno,
-                                          target_ulong val, uintptr_t ra)
+                                          uint64_t val, uintptr_t ra)
 {
     int cidx;
     PMUCTRState *counter;
     RISCVCPU *cpu = env_archcpu(env);
     uint32_t present_ctrs = cpu->pmu_avail_ctrs | COUNTEREN_CY | COUNTEREN_IR;
-    target_ulong updated_ctrs = (env->mcountinhibit ^ val) & present_ctrs;
+    uint64_t updated_ctrs = (env->mcountinhibit ^ val) & present_ctrs;
     uint64_t mhpmctr_val, prev_count, curr_count;
 
     /* WARL register - disable unavailable counters; TM bit is always 0 */
@@ -3044,7 +3042,7 @@ static RISCVException write_mcountinhibit(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_scountinhibit(CPURISCVState *env, int csrno,
-                                         target_ulong *val)
+                                         uint64_t *val)
 {
     /* S-mode can only access the bits delegated by M-mode */
     *val = env->mcountinhibit & env->mcounteren;
@@ -3052,20 +3050,20 @@ static RISCVException read_scountinhibit(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_scountinhibit(CPURISCVState *env, int csrno,
-                                          target_ulong val, uintptr_t ra)
+                                          uint64_t val, uintptr_t ra)
 {
     return write_mcountinhibit(env, csrno, val & env->mcounteren, ra);
 }
 
 static RISCVException read_mcounteren(CPURISCVState *env, int csrno,
-                                      target_ulong *val)
+                                      uint64_t *val)
 {
     *val = env->mcounteren;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mcounteren(CPURISCVState *env, int csrno,
-                                       target_ulong val, uintptr_t ra)
+                                       uint64_t val, uintptr_t ra)
 {
     RISCVCPU *cpu = env_archcpu(env);
 
@@ -3092,56 +3090,56 @@ static RISCVException write_mscratch_i128(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_mscratch(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     *val = env->mscratch;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mscratch(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     env->mscratch = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mepc(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
     *val = env->mepc & get_xepc_mask(env);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mepc(CPURISCVState *env, int csrno,
-                                 target_ulong val, uintptr_t ra)
+                                 uint64_t val, uintptr_t ra)
 {
     env->mepc = val & get_xepc_mask(env);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mcause(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = env->mcause;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mcause(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     env->mcause = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mtval(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->mtval;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mtval(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     env->mtval = val;
     return RISCV_EXCP_NONE;
@@ -3149,16 +3147,16 @@ static RISCVException write_mtval(CPURISCVState *env, int csrno,
 
 /* Execution environment configuration setup */
 static RISCVException read_menvcfg(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = env->menvcfg;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_henvcfg(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra);
+                                    uint64_t val, uintptr_t ra);
 static RISCVException write_menvcfg(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     const RISCVCPUConfig *cfg = riscv_cpu_cfg(env);
     uint64_t mask = MENVCFG_FIOM | MENVCFG_CBIE | MENVCFG_CBCFE |
@@ -3205,16 +3203,16 @@ static RISCVException write_menvcfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_menvcfgh(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     *val = env->menvcfg >> 32;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_henvcfgh(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra);
+                                     uint64_t val, uintptr_t ra);
 static RISCVException write_menvcfgh(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     const RISCVCPUConfig *cfg = riscv_cpu_cfg(env);
     uint64_t mask = (cfg->ext_svpbmt ? MENVCFG_PBMTE : 0) |
@@ -3244,7 +3242,7 @@ static RISCVException write_menvcfgh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_senvcfg(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     RISCVException ret;
 
@@ -3258,7 +3256,7 @@ static RISCVException read_senvcfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_senvcfg(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     uint64_t mask = SENVCFG_FIOM | SENVCFG_CBIE | SENVCFG_CBCFE | SENVCFG_CBZE;
     RISCVException ret;
@@ -3294,7 +3292,7 @@ static RISCVException write_senvcfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_henvcfg(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     RISCVException ret;
 
@@ -3315,7 +3313,7 @@ static RISCVException read_henvcfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_henvcfg(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     const RISCVCPUConfig *cfg = riscv_cpu_cfg(env);
     uint64_t mask = HENVCFG_FIOM | HENVCFG_CBIE | HENVCFG_CBCFE | HENVCFG_CBZE;
@@ -3366,7 +3364,7 @@ static RISCVException write_henvcfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_henvcfgh(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     RISCVException ret;
 
@@ -3381,7 +3379,7 @@ static RISCVException read_henvcfgh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_henvcfgh(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     const RISCVCPUConfig *cfg = riscv_cpu_cfg(env);
     uint64_t mask = env->menvcfg & (HENVCFG_PBMTE | HENVCFG_STCE |
@@ -3413,7 +3411,7 @@ static RISCVException write_henvcfgh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_mstateen(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     *val = env->mstateen[csrno - CSR_MSTATEEN0];
 
@@ -3421,7 +3419,7 @@ static RISCVException read_mstateen(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mstateen(CPURISCVState *env, int csrno,
-                                     uint64_t wr_mask, target_ulong new_val)
+                                     uint64_t wr_mask, uint64_t new_val)
 {
     uint64_t *reg;
 
@@ -3432,7 +3430,7 @@ static RISCVException write_mstateen(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mstateen0(CPURISCVState *env, int csrno,
-                                      target_ulong new_val, uintptr_t ra)
+                                      uint64_t new_val, uintptr_t ra)
 {
     uint64_t wr_mask = SMSTATEEN_STATEEN | SMSTATEEN0_HSENVCFG;
     if (!riscv_has_ext(env, RVF)) {
@@ -3464,13 +3462,13 @@ static RISCVException write_mstateen0(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mstateen_1_3(CPURISCVState *env, int csrno,
-                                         target_ulong new_val, uintptr_t ra)
+                                         uint64_t new_val, uintptr_t ra)
 {
     return write_mstateen(env, csrno, SMSTATEEN_STATEEN, new_val);
 }
 
 static RISCVException read_mstateenh(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     *val = env->mstateen[csrno - CSR_MSTATEEN0H] >> 32;
 
@@ -3478,7 +3476,7 @@ static RISCVException read_mstateenh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mstateenh(CPURISCVState *env, int csrno,
-                                      uint64_t wr_mask, target_ulong new_val)
+                                      uint64_t wr_mask, uint64_t new_val)
 {
     uint64_t *reg, val;
 
@@ -3491,7 +3489,7 @@ static RISCVException write_mstateenh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mstateen0h(CPURISCVState *env, int csrno,
-                                       target_ulong new_val, uintptr_t ra)
+                                       uint64_t new_val, uintptr_t ra)
 {
     uint64_t wr_mask = SMSTATEEN_STATEEN | SMSTATEEN0_HSENVCFG;
 
@@ -3507,13 +3505,13 @@ static RISCVException write_mstateen0h(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_mstateenh_1_3(CPURISCVState *env, int csrno,
-                                          target_ulong new_val, uintptr_t ra)
+                                          uint64_t new_val, uintptr_t ra)
 {
     return write_mstateenh(env, csrno, SMSTATEEN_STATEEN, new_val);
 }
 
 static RISCVException read_hstateen(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     int index = csrno - CSR_HSTATEEN0;
 
@@ -3523,7 +3521,7 @@ static RISCVException read_hstateen(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_hstateen(CPURISCVState *env, int csrno,
-                                     uint64_t mask, target_ulong new_val)
+                                     uint64_t mask, uint64_t new_val)
 {
     int index = csrno - CSR_HSTATEEN0;
     uint64_t *reg, wr_mask;
@@ -3536,7 +3534,7 @@ static RISCVException write_hstateen(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_hstateen0(CPURISCVState *env, int csrno,
-                                      target_ulong new_val, uintptr_t ra)
+                                      uint64_t new_val, uintptr_t ra)
 {
     uint64_t wr_mask = SMSTATEEN_STATEEN | SMSTATEEN0_HSENVCFG;
 
@@ -3565,13 +3563,13 @@ static RISCVException write_hstateen0(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_hstateen_1_3(CPURISCVState *env, int csrno,
-                                         target_ulong new_val, uintptr_t ra)
+                                         uint64_t new_val, uintptr_t ra)
 {
     return write_hstateen(env, csrno, SMSTATEEN_STATEEN, new_val);
 }
 
 static RISCVException read_hstateenh(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     int index = csrno - CSR_HSTATEEN0H;
 
@@ -3581,7 +3579,7 @@ static RISCVException read_hstateenh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_hstateenh(CPURISCVState *env, int csrno,
-                                      uint64_t mask, target_ulong new_val)
+                                      uint64_t mask, uint64_t new_val)
 {
     int index = csrno - CSR_HSTATEEN0H;
     uint64_t *reg, wr_mask, val;
@@ -3596,7 +3594,7 @@ static RISCVException write_hstateenh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_hstateen0h(CPURISCVState *env, int csrno,
-                                       target_ulong new_val, uintptr_t ra)
+                                       uint64_t new_val, uintptr_t ra)
 {
     uint64_t wr_mask = SMSTATEEN_STATEEN | SMSTATEEN0_HSENVCFG;
 
@@ -3608,13 +3606,13 @@ static RISCVException write_hstateen0h(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_hstateenh_1_3(CPURISCVState *env, int csrno,
-                                          target_ulong new_val, uintptr_t ra)
+                                          uint64_t new_val, uintptr_t ra)
 {
     return write_hstateenh(env, csrno, SMSTATEEN_STATEEN, new_val);
 }
 
 static RISCVException read_sstateen(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     bool virt = env->virt_enabled;
     int index = csrno - CSR_SSTATEEN0;
@@ -3628,7 +3626,7 @@ static RISCVException read_sstateen(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_sstateen(CPURISCVState *env, int csrno,
-                                     uint64_t mask, target_ulong new_val)
+                                     uint64_t mask, uint64_t new_val)
 {
     bool virt = env->virt_enabled;
     int index = csrno - CSR_SSTATEEN0;
@@ -3647,7 +3645,7 @@ static RISCVException write_sstateen(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_sstateen0(CPURISCVState *env, int csrno,
-                                      target_ulong new_val, uintptr_t ra)
+                                      uint64_t new_val, uintptr_t ra)
 {
     uint64_t wr_mask = SMSTATEEN_STATEEN | SMSTATEEN0_HSENVCFG;
 
@@ -3659,7 +3657,7 @@ static RISCVException write_sstateen0(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_sstateen_1_3(CPURISCVState *env, int csrno,
-                                         target_ulong new_val, uintptr_t ra)
+                                         uint64_t new_val, uintptr_t ra)
 {
     return write_sstateen(env, csrno, SMSTATEEN_STATEEN, new_val);
 }
@@ -3697,7 +3695,7 @@ static RISCVException rmw_mip64(CPURISCVState *env, int csrno,
 
     if (csrno != CSR_HVIP) {
         gin = get_field(env->hstatus, HSTATUS_VGEIN);
-        old_mip |= (env->hgeip & ((target_ulong)1 << gin)) ? MIP_VSEIP : 0;
+        old_mip |= (env->hgeip & ((uint64_t)1 << gin)) ? MIP_VSEIP : 0;
         old_mip |= env->vstime_irq ? MIP_VSTIP : 0;
     }
 
@@ -3709,8 +3707,8 @@ static RISCVException rmw_mip64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_mip(CPURISCVState *env, int csrno,
-                              target_ulong *ret_val,
-                              target_ulong new_val, target_ulong wr_mask)
+                              uint64_t *ret_val,
+                              uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -3724,8 +3722,8 @@ static RISCVException rmw_mip(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_miph(CPURISCVState *env, int csrno,
-                               target_ulong *ret_val,
-                               target_ulong new_val, target_ulong wr_mask)
+                               uint64_t *ret_val,
+                               uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -3755,7 +3753,7 @@ static RISCVException rmw_mvip64(CPURISCVState *env, int csrno,
                                 uint64_t new_val, uint64_t wr_mask)
 {
     RISCVCPU *cpu = env_archcpu(env);
-    target_ulong ret_mip = 0;
+    uint64_t ret_mip = 0;
     RISCVException ret;
     uint64_t old_mvip;
 
@@ -3846,8 +3844,8 @@ static RISCVException rmw_mvip64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_mvip(CPURISCVState *env, int csrno,
-                              target_ulong *ret_val,
-                              target_ulong new_val, target_ulong wr_mask)
+                              uint64_t *ret_val,
+                              uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -3861,8 +3859,8 @@ static RISCVException rmw_mvip(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_mviph(CPURISCVState *env, int csrno,
-                               target_ulong *ret_val,
-                               target_ulong new_val, target_ulong wr_mask)
+                               uint64_t *ret_val,
+                               uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -3898,9 +3896,9 @@ static RISCVException read_sstatus_i128(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_sstatus(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
-    target_ulong mask = (sstatus_v1_10_mask);
+    uint64_t mask = (sstatus_v1_10_mask);
     if (env->xl != MXL_RV32 || env->debugger) {
         mask |= SSTATUS64_UXL;
     }
@@ -3917,9 +3915,9 @@ static RISCVException read_sstatus(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_sstatus(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
-    target_ulong mask = (sstatus_v1_10_mask);
+    uint64_t mask = (sstatus_v1_10_mask);
 
     if (env->xl != MXL_RV32 || env->debugger) {
         if ((val & SSTATUS64_UXL) != 0) {
@@ -3933,7 +3931,7 @@ static RISCVException write_sstatus(CPURISCVState *env, int csrno,
     if (riscv_cpu_cfg(env)->ext_ssdbltrp) {
         mask |= SSTATUS_SDT;
     }
-    target_ulong newval = (env->mstatus & ~mask) | (val & mask);
+    uint64_t newval = (env->mstatus & ~mask) | (val & mask);
     return write_mstatus(env, CSR_MSTATUS, newval, ra);
 }
 
@@ -3977,8 +3975,8 @@ static RISCVException rmw_vsie64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_vsie(CPURISCVState *env, int csrno,
-                               target_ulong *ret_val,
-                               target_ulong new_val, target_ulong wr_mask)
+                               uint64_t *ret_val,
+                               uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -3992,8 +3990,8 @@ static RISCVException rmw_vsie(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_vsieh(CPURISCVState *env, int csrno,
-                                target_ulong *ret_val,
-                                target_ulong new_val, target_ulong wr_mask)
+                                uint64_t *ret_val,
+                                uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4048,8 +4046,8 @@ static RISCVException rmw_sie64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_sie(CPURISCVState *env, int csrno,
-                              target_ulong *ret_val,
-                              target_ulong new_val, target_ulong wr_mask)
+                              uint64_t *ret_val,
+                              uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4063,8 +4061,8 @@ static RISCVException rmw_sie(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_sieh(CPURISCVState *env, int csrno,
-                               target_ulong *ret_val,
-                               target_ulong new_val, target_ulong wr_mask)
+                               uint64_t *ret_val,
+                               uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4079,14 +4077,14 @@ static RISCVException rmw_sieh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_stvec(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->stvec;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_stvec(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     /* bits [1:0] encode mode; 0 = direct, 1 = vectored, 2 >= reserved */
     if ((val & 3) < 2) {
@@ -4098,14 +4096,14 @@ static RISCVException write_stvec(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_scounteren(CPURISCVState *env, int csrno,
-                                      target_ulong *val)
+                                      uint64_t *val)
 {
     *val = env->scounteren;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_scounteren(CPURISCVState *env, int csrno,
-                                       target_ulong val, uintptr_t ra)
+                                       uint64_t val, uintptr_t ra)
 {
     RISCVCPU *cpu = env_archcpu(env);
 
@@ -4132,56 +4130,56 @@ static RISCVException write_sscratch_i128(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_sscratch(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     *val = env->sscratch;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_sscratch(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     env->sscratch = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_sepc(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
     *val = env->sepc & get_xepc_mask(env);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_sepc(CPURISCVState *env, int csrno,
-                                 target_ulong val, uintptr_t ra)
+                                 uint64_t val, uintptr_t ra)
 {
     env->sepc = val & get_xepc_mask(env);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_scause(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = env->scause;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_scause(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     env->scause = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_stval(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->stval;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_stval(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     env->stval = val;
     return RISCV_EXCP_NONE;
@@ -4223,8 +4221,8 @@ static RISCVException rmw_vsip64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_vsip(CPURISCVState *env, int csrno,
-                               target_ulong *ret_val,
-                               target_ulong new_val, target_ulong wr_mask)
+                               uint64_t *ret_val,
+                               uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4238,8 +4236,8 @@ static RISCVException rmw_vsip(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_vsiph(CPURISCVState *env, int csrno,
-                                target_ulong *ret_val,
-                                target_ulong new_val, target_ulong wr_mask)
+                                uint64_t *ret_val,
+                                uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4278,8 +4276,8 @@ static RISCVException rmw_sip64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_sip(CPURISCVState *env, int csrno,
-                              target_ulong *ret_val,
-                              target_ulong new_val, target_ulong wr_mask)
+                              uint64_t *ret_val,
+                              uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4293,8 +4291,8 @@ static RISCVException rmw_sip(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_siph(CPURISCVState *env, int csrno,
-                               target_ulong *ret_val,
-                               target_ulong new_val, target_ulong wr_mask)
+                               uint64_t *ret_val,
+                               uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4310,7 +4308,7 @@ static RISCVException rmw_siph(CPURISCVState *env, int csrno,
 
 /* Supervisor Protection and Translation */
 static RISCVException read_satp(CPURISCVState *env, int csrno,
-                                target_ulong *val)
+                                uint64_t *val)
 {
     if (!riscv_cpu_cfg(env)->mmu) {
         *val = 0;
@@ -4321,7 +4319,7 @@ static RISCVException read_satp(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_satp(CPURISCVState *env, int csrno,
-                                 target_ulong val, uintptr_t ra)
+                                 uint64_t val, uintptr_t ra)
 {
     if (!riscv_cpu_cfg(env)->mmu) {
         return RISCV_EXCP_NONE;
@@ -4332,8 +4330,8 @@ static RISCVException write_satp(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_sctrdepth(CPURISCVState *env, int csrno,
-                                    target_ulong *ret_val,
-                                    target_ulong new_val, target_ulong wr_mask)
+                                    uint64_t *ret_val,
+                                    uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t mask = wr_mask & SCTRDEPTH_MASK;
 
@@ -4362,8 +4360,8 @@ static RISCVException rmw_sctrdepth(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_sctrstatus(CPURISCVState *env, int csrno,
-                                     target_ulong *ret_val,
-                                     target_ulong new_val, target_ulong wr_mask)
+                                     uint64_t *ret_val,
+                                     uint64_t new_val, uint64_t wr_mask)
 {
     uint32_t depth = 16 << get_field(env->sctrdepth, SCTRDEPTH_MASK);
     uint32_t mask = wr_mask & SCTRSTATUS_MASK;
@@ -4381,8 +4379,8 @@ static RISCVException rmw_sctrstatus(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_xctrctl(CPURISCVState *env, int csrno,
-                                    target_ulong *ret_val,
-                                    target_ulong new_val, target_ulong wr_mask)
+                                    uint64_t *ret_val,
+                                    uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t csr_mask, mask = wr_mask;
     uint64_t *ctl_ptr = &env->mctrctl;
@@ -4412,7 +4410,7 @@ static RISCVException rmw_xctrctl(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_vstopi(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     int irq, ret;
     uint64_t topei = 0;
@@ -4502,7 +4500,7 @@ static RISCVException read_vstopi(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_stopi(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     int irq;
     uint8_t iprio;
@@ -4530,7 +4528,7 @@ static RISCVException read_stopi(CPURISCVState *env, int csrno,
 
 /* Hypervisor Extensions */
 static RISCVException read_hstatus(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = env->hstatus;
     if (riscv_cpu_mxl(env) != MXL_RV32) {
@@ -4543,9 +4541,9 @@ static RISCVException read_hstatus(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_hstatus(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
-    uint64_t mask = (target_ulong)-1;
+    uint64_t mask = MAKE_64BIT_MASK(0, riscv_cpu_mxl_bits(env));
     if (!env_archcpu(env)->cfg.ext_svukte) {
         mask &= ~HSTATUS_HUKTE;
     }
@@ -4568,21 +4566,21 @@ static RISCVException write_hstatus(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_hedeleg(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = env->hedeleg;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_hedeleg(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     env->hedeleg = val & vs_delegable_excps;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_hedelegh(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     RISCVException ret;
     ret = smstateen_acc_ok(env, 0, SMSTATEEN0_P1P13);
@@ -4596,7 +4594,7 @@ static RISCVException read_hedelegh(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_hedelegh(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     RISCVException ret;
     ret = smstateen_acc_ok(env, 0, SMSTATEEN0_P1P13);
@@ -4624,8 +4622,8 @@ static RISCVException rmw_hvien64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_hvien(CPURISCVState *env, int csrno,
-                               target_ulong *ret_val,
-                               target_ulong new_val, target_ulong wr_mask)
+                               uint64_t *ret_val,
+                               uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4639,8 +4637,8 @@ static RISCVException rmw_hvien(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_hvienh(CPURISCVState *env, int csrno,
-                                   target_ulong *ret_val,
-                                   target_ulong new_val, target_ulong wr_mask)
+                                   uint64_t *ret_val,
+                                   uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4669,8 +4667,8 @@ static RISCVException rmw_hideleg64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_hideleg(CPURISCVState *env, int csrno,
-                                  target_ulong *ret_val,
-                                  target_ulong new_val, target_ulong wr_mask)
+                                  uint64_t *ret_val,
+                                  uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4684,8 +4682,8 @@ static RISCVException rmw_hideleg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_hidelegh(CPURISCVState *env, int csrno,
-                                   target_ulong *ret_val,
-                                   target_ulong new_val, target_ulong wr_mask)
+                                   uint64_t *ret_val,
+                                   uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4793,8 +4791,8 @@ static RISCVException rmw_hvip64(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_hvip(CPURISCVState *env, int csrno,
-                               target_ulong *ret_val,
-                               target_ulong new_val, target_ulong wr_mask)
+                               uint64_t *ret_val,
+                               uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4808,8 +4806,8 @@ static RISCVException rmw_hvip(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_hviph(CPURISCVState *env, int csrno,
-                                target_ulong *ret_val,
-                                target_ulong new_val, target_ulong wr_mask)
+                                uint64_t *ret_val,
+                                uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4824,8 +4822,8 @@ static RISCVException rmw_hviph(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_hip(CPURISCVState *env, int csrno,
-                              target_ulong *ret_value,
-                              target_ulong new_value, target_ulong write_mask)
+                              uint64_t *ret_value,
+                              uint64_t new_value, uint64_t write_mask)
 {
     int ret = rmw_mip(env, csrno, ret_value, new_value,
                       write_mask & hip_writable_mask);
@@ -4837,8 +4835,8 @@ static RISCVException rmw_hip(CPURISCVState *env, int csrno,
 }
 
 static RISCVException rmw_hie(CPURISCVState *env, int csrno,
-                              target_ulong *ret_val,
-                              target_ulong new_val, target_ulong wr_mask)
+                              uint64_t *ret_val,
+                              uint64_t new_val, uint64_t wr_mask)
 {
     uint64_t rval;
     RISCVException ret;
@@ -4852,14 +4850,14 @@ static RISCVException rmw_hie(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_hcounteren(CPURISCVState *env, int csrno,
-                                      target_ulong *val)
+                                      uint64_t *val)
 {
     *val = env->hcounteren;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_hcounteren(CPURISCVState *env, int csrno,
-                                       target_ulong val, uintptr_t ra)
+                                       uint64_t val, uintptr_t ra)
 {
     RISCVCPU *cpu = env_archcpu(env);
 
@@ -4870,7 +4868,7 @@ static RISCVException write_hcounteren(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_hgeie(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     if (val) {
         *val = env->hgeie;
@@ -4879,10 +4877,10 @@ static RISCVException read_hgeie(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_hgeie(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     /* Only GEILEN:1 bits implemented and BIT0 is never implemented */
-    val &= ((((target_ulong)1) << env->geilen) - 1) << 1;
+    val &= ((((uint64_t)1) << env->geilen) - 1) << 1;
     env->hgeie = val;
     /* Update mip.SGEIP bit */
     riscv_cpu_update_mip(env, MIP_SGEIP,
@@ -4891,34 +4889,34 @@ static RISCVException write_hgeie(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_htval(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->htval;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_htval(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     env->htval = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_htinst(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = env->htinst;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_htinst(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_hgeip(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     if (val) {
         *val = env->hgeip;
@@ -4927,21 +4925,21 @@ static RISCVException read_hgeip(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_hgatp(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->hgatp;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_hgatp(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     env->hgatp = legalize_xatp(env, env->hgatp, val);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_htimedelta(CPURISCVState *env, int csrno,
-                                      target_ulong *val)
+                                      uint64_t *val)
 {
     if (!env->rdtime_fn) {
         return RISCV_EXCP_ILLEGAL_INST;
@@ -4952,7 +4950,7 @@ static RISCVException read_htimedelta(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_htimedelta(CPURISCVState *env, int csrno,
-                                       target_ulong val, uintptr_t ra)
+                                       uint64_t val, uintptr_t ra)
 {
     if (!env->rdtime_fn) {
         return RISCV_EXCP_ILLEGAL_INST;
@@ -4973,7 +4971,7 @@ static RISCVException write_htimedelta(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_htimedeltah(CPURISCVState *env, int csrno,
-                                       target_ulong *val)
+                                       uint64_t *val)
 {
     if (!env->rdtime_fn) {
         return RISCV_EXCP_ILLEGAL_INST;
@@ -4984,7 +4982,7 @@ static RISCVException read_htimedeltah(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_htimedeltah(CPURISCVState *env, int csrno,
-                                        target_ulong val, uintptr_t ra)
+                                        uint64_t val, uintptr_t ra)
 {
     if (!env->rdtime_fn) {
         return RISCV_EXCP_ILLEGAL_INST;
@@ -5001,21 +4999,21 @@ static RISCVException write_htimedeltah(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_hvictl(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = env->hvictl;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_hvictl(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     env->hvictl = val & HVICTL_VALID_MASK;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_hvipriox(CPURISCVState *env, int first_index,
-                         uint8_t *iprio, target_ulong *val)
+                         uint8_t *iprio, uint64_t *val)
 {
     int i, irq, rdzero, num_irqs = 4 * (riscv_cpu_mxl_bits(env) / 32);
 
@@ -5034,14 +5032,14 @@ static RISCVException read_hvipriox(CPURISCVState *env, int first_index,
         if (rdzero) {
             continue;
         }
-        *val |= ((target_ulong)iprio[irq]) << (i * 8);
+        *val |= ((uint64_t)iprio[irq]) << (i * 8);
     }
 
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_hvipriox(CPURISCVState *env, int first_index,
-                          uint8_t *iprio, target_ulong val)
+                          uint8_t *iprio, uint64_t val)
 {
     int i, irq, rdzero, num_irqs = 4 * (riscv_cpu_mxl_bits(env) / 32);
 
@@ -5067,65 +5065,65 @@ static RISCVException write_hvipriox(CPURISCVState *env, int first_index,
 }
 
 static RISCVException read_hviprio1(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     return read_hvipriox(env, 0, env->hviprio, val);
 }
 
 static RISCVException write_hviprio1(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     return write_hvipriox(env, 0, env->hviprio, val);
 }
 
 static RISCVException read_hviprio1h(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     return read_hvipriox(env, 4, env->hviprio, val);
 }
 
 static RISCVException write_hviprio1h(CPURISCVState *env, int csrno,
-                                      target_ulong val, uintptr_t ra)
+                                      uint64_t val, uintptr_t ra)
 {
     return write_hvipriox(env, 4, env->hviprio, val);
 }
 
 static RISCVException read_hviprio2(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     return read_hvipriox(env, 8, env->hviprio, val);
 }
 
 static RISCVException write_hviprio2(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     return write_hvipriox(env, 8, env->hviprio, val);
 }
 
 static RISCVException read_hviprio2h(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     return read_hvipriox(env, 12, env->hviprio, val);
 }
 
 static RISCVException write_hviprio2h(CPURISCVState *env, int csrno,
-                                      target_ulong val, uintptr_t ra)
+                                      uint64_t val, uintptr_t ra)
 {
     return write_hvipriox(env, 12, env->hviprio, val);
 }
 
 /* Virtual CSR Registers */
 static RISCVException read_vsstatus(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     *val = env->vsstatus;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vsstatus(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
-    uint64_t mask = (target_ulong)-1;
+    uint64_t mask = MAKE_64BIT_MASK(0, riscv_cpu_mxl_bits(env));
     if ((val & VSSTATUS64_UXL) == 0) {
         mask &= ~VSSTATUS64_UXL;
     }
@@ -5141,14 +5139,14 @@ static RISCVException write_vsstatus(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_vstvec(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = env->vstvec;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vstvec(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     /* bits [1:0] encode mode; 0 = direct, 1 = vectored, 2 >= reserved */
     if ((val & 3) < 2) {
@@ -5160,98 +5158,98 @@ static RISCVException write_vstvec(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_vsscratch(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     *val = env->vsscratch;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vsscratch(CPURISCVState *env, int csrno,
-                                      target_ulong val, uintptr_t ra)
+                                      uint64_t val, uintptr_t ra)
 {
     env->vsscratch = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_vsepc(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->vsepc;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vsepc(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     env->vsepc = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_vscause(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = env->vscause;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vscause(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     env->vscause = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_vstval(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = env->vstval;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vstval(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     env->vstval = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_vsatp(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->vsatp;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_vsatp(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     env->vsatp = legalize_xatp(env, env->vsatp, val);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mtval2(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = env->mtval2;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mtval2(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     env->mtval2 = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mtinst(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     *val = env->mtinst;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mtinst(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     env->mtinst = val;
     return RISCV_EXCP_NONE;
@@ -5259,21 +5257,21 @@ static RISCVException write_mtinst(CPURISCVState *env, int csrno,
 
 /* Physical Memory Protection */
 static RISCVException read_mseccfg(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = mseccfg_csr_read(env);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mseccfg(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     mseccfg_csr_write(env, val);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_pmpcfg(CPURISCVState *env, int csrno,
-                                  target_ulong *val)
+                                  uint64_t *val)
 {
     uint32_t reg_index = csrno - CSR_PMPCFG0;
 
@@ -5282,7 +5280,7 @@ static RISCVException read_pmpcfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_pmpcfg(CPURISCVState *env, int csrno,
-                                   target_ulong val, uintptr_t ra)
+                                   uint64_t val, uintptr_t ra)
 {
     uint32_t reg_index = csrno - CSR_PMPCFG0;
 
@@ -5291,35 +5289,35 @@ static RISCVException write_pmpcfg(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_pmpaddr(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = pmpaddr_csr_read(env, csrno - CSR_PMPADDR0);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_pmpaddr(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     pmpaddr_csr_write(env, csrno - CSR_PMPADDR0, val);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_tselect(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = tselect_csr_read(env);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_tselect(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     tselect_csr_write(env, val);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_tdata(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     /* return 0 in tdata1 to end the trigger enumeration */
     if (env->trigger_cur >= RV_MAX_TRIGGERS && csrno == CSR_TDATA1) {
@@ -5336,7 +5334,7 @@ static RISCVException read_tdata(CPURISCVState *env, int csrno,
 }
 
 static RISCVException write_tdata(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     if (!tdata_available(env, csrno - CSR_TDATA1)) {
         return RISCV_EXCP_ILLEGAL_INST;
@@ -5347,21 +5345,21 @@ static RISCVException write_tdata(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_tinfo(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = tinfo_csr_read(env);
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mcontext(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     *val = env->mcontext;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mcontext(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
     bool rv32 = riscv_cpu_mxl(env) == MXL_RV32 ? true : false;
     int32_t mask;
@@ -5379,58 +5377,58 @@ static RISCVException write_mcontext(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_mnscratch(CPURISCVState *env, int csrno,
-                                     target_ulong *val)
+                                     uint64_t *val)
 {
     *val = env->mnscratch;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mnscratch(CPURISCVState *env, int csrno,
-                                      target_ulong val, uintptr_t ra)
+                                      uint64_t val, uintptr_t ra)
 {
     env->mnscratch = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mnepc(CPURISCVState *env, int csrno,
-                                 target_ulong *val)
+                                 uint64_t *val)
 {
     *val = env->mnepc;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mnepc(CPURISCVState *env, int csrno,
-                                  target_ulong val, uintptr_t ra)
+                                  uint64_t val, uintptr_t ra)
 {
     env->mnepc = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mncause(CPURISCVState *env, int csrno,
-                                   target_ulong *val)
+                                   uint64_t *val)
 {
     *val = env->mncause;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mncause(CPURISCVState *env, int csrno,
-                                    target_ulong val, uintptr_t ra)
+                                    uint64_t val, uintptr_t ra)
 {
     env->mncause = val;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException read_mnstatus(CPURISCVState *env, int csrno,
-                                    target_ulong *val)
+                                    uint64_t *val)
 {
     *val = env->mnstatus;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_mnstatus(CPURISCVState *env, int csrno,
-                                     target_ulong val, uintptr_t ra)
+                                     uint64_t val, uintptr_t ra)
 {
-    target_ulong mask = (MNSTATUS_NMIE | MNSTATUS_MNPP);
+    uint64_t mask = (MNSTATUS_NMIE | MNSTATUS_MNPP);
 
     if (riscv_has_ext(env, RVH)) {
         /* Flush tlb on mnstatus fields that affect VM. */
@@ -5449,13 +5447,13 @@ static RISCVException write_mnstatus(CPURISCVState *env, int csrno,
 #endif
 
 /* Crypto Extension */
-target_ulong riscv_new_csr_seed(target_ulong new_value,
-                                target_ulong write_mask)
+uint64_t riscv_new_csr_seed(uint64_t new_value,
+                                uint64_t write_mask)
 {
     uint16_t random_v;
     Error *random_e = NULL;
     int random_r;
-    target_ulong rval;
+    uint64_t rval;
 
     random_r = qemu_guest_getrandom(&random_v, 2, &random_e);
     if (unlikely(random_r < 0)) {
@@ -5478,11 +5476,11 @@ target_ulong riscv_new_csr_seed(target_ulong new_value,
 }
 
 static RISCVException rmw_seed(CPURISCVState *env, int csrno,
-                               target_ulong *ret_value,
-                               target_ulong new_value,
-                               target_ulong write_mask)
+                               uint64_t *ret_value,
+                               uint64_t new_value,
+                               uint64_t write_mask)
 {
-    target_ulong rval;
+    uint64_t rval;
 
     rval = riscv_new_csr_seed(new_value, write_mask);
 
@@ -5566,13 +5564,13 @@ static inline RISCVException riscv_csrrw_check(CPURISCVState *env,
 }
 
 static RISCVException riscv_csrrw_do64(CPURISCVState *env, int csrno,
-                                       target_ulong *ret_value,
-                                       target_ulong new_value,
-                                       target_ulong write_mask,
+                                       uint64_t *ret_value,
+                                       uint64_t new_value,
+                                       uint64_t write_mask,
                                        uintptr_t ra)
 {
     RISCVException ret;
-    target_ulong old_value = 0;
+    uint64_t old_value = 0;
 
     /* execute combined read/write operation if it exists */
     if (csr_ops[csrno].op) {
@@ -5615,7 +5613,7 @@ static RISCVException riscv_csrrw_do64(CPURISCVState *env, int csrno,
 }
 
 RISCVException riscv_csrr(CPURISCVState *env, int csrno,
-                           target_ulong *ret_value)
+                           uint64_t *ret_value)
 {
     RISCVException ret = riscv_csrrw_check(env, csrno, false);
     if (ret != RISCV_EXCP_NONE) {
@@ -5626,8 +5624,8 @@ RISCVException riscv_csrr(CPURISCVState *env, int csrno,
 }
 
 RISCVException riscv_csrrw(CPURISCVState *env, int csrno,
-                           target_ulong *ret_value, target_ulong new_value,
-                           target_ulong write_mask, uintptr_t ra)
+                           uint64_t *ret_value, uint64_t new_value,
+                           uint64_t write_mask, uintptr_t ra)
 {
     RISCVException ret = riscv_csrrw_check(env, csrno, true);
     if (ret != RISCV_EXCP_NONE) {
@@ -5641,14 +5639,14 @@ int riscv_csr_write_i64(CPURISCVState *env, int csrno, uint64_t val)
 {
     RISCVException ret;
     ret = riscv_csrrw(env, csrno, NULL, val,
-                      MAKE_64BIT_MASK(0, TARGET_LONG_BITS), 0);
+                      MAKE_64BIT_MASK(0, riscv_cpu_mxl_bits(env)), 0);
     return ret;
 }
 
 int riscv_csr_read_i64(CPURISCVState *env, int csrno, uint64_t *res)
 {
     RISCVException ret;
-    target_ulong val = 0;
+    uint64_t val = 0;
     ret = riscv_csrr(env, csrno, &val);
     *res = val;
     return ret;
@@ -5716,7 +5714,7 @@ RISCVException riscv_csrr_i128(CPURISCVState *env, int csrno,
      * significant), for those, this fallback is correctly handling the
      * accesses
      */
-    target_ulong old_value;
+    uint64_t old_value;
     ret = riscv_csrrw_do64(env, csrno, &old_value, 0, 0, 0);
     if (ret == RISCV_EXCP_NONE && ret_value) {
         *ret_value = int128_make64(old_value);
@@ -5747,7 +5745,7 @@ RISCVException riscv_csrrw_i128(CPURISCVState *env, int csrno,
      * significant), for those, this fallback is correctly handling the
      * accesses
      */
-    target_ulong old_value;
+    uint64_t old_value;
     ret = riscv_csrrw_do64(env, csrno, &old_value,
                            int128_getlo(new_value),
                            int128_getlo(write_mask), ra);
@@ -5762,9 +5760,9 @@ RISCVException riscv_csrrw_i128(CPURISCVState *env, int csrno,
  * riscv_csrrw call and clear it after the call.
  */
 RISCVException riscv_csrrw_debug(CPURISCVState *env, int csrno,
-                                 target_ulong *ret_value,
-                                 target_ulong new_value,
-                                 target_ulong write_mask)
+                                 uint64_t *ret_value,
+                                 uint64_t new_value,
+                                 uint64_t write_mask)
 {
     RISCVException ret;
 #if !defined(CONFIG_USER_ONLY)
@@ -5782,14 +5780,14 @@ RISCVException riscv_csrrw_debug(CPURISCVState *env, int csrno,
 }
 
 static RISCVException read_jvt(CPURISCVState *env, int csrno,
-                               target_ulong *val)
+                               uint64_t *val)
 {
     *val = env->jvt;
     return RISCV_EXCP_NONE;
 }
 
 static RISCVException write_jvt(CPURISCVState *env, int csrno,
-                                target_ulong val, uintptr_t ra)
+                                uint64_t val, uintptr_t ra)
 {
     env->jvt = val;
     return RISCV_EXCP_NONE;

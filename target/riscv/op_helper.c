@@ -59,7 +59,7 @@ target_ulong HELPER(csrr)(CPURISCVState *env, int csr)
         riscv_raise_exception(env, RISCV_EXCP_ILLEGAL_INST, GETPC());
     }
 
-    target_ulong val = 0;
+    uint64_t val = 0;
     RISCVException ret = riscv_csrr(env, csr, &val);
 
     if (ret != RISCV_EXCP_NONE) {
@@ -70,7 +70,7 @@ target_ulong HELPER(csrr)(CPURISCVState *env, int csr)
 
 void HELPER(csrw)(CPURISCVState *env, int csr, target_ulong src)
 {
-    target_ulong mask = env->xl == MXL_RV32 ? UINT32_MAX : (target_ulong)-1;
+    uint64_t mask = env->xl == MXL_RV32 ? UINT32_MAX : (target_ulong)-1;
     RISCVException ret = riscv_csrrw(env, csr, NULL, src, mask, GETPC());
 
     if (ret != RISCV_EXCP_NONE) {
@@ -81,7 +81,7 @@ void HELPER(csrw)(CPURISCVState *env, int csr, target_ulong src)
 target_ulong HELPER(csrrw)(CPURISCVState *env, int csr,
                            target_ulong src, target_ulong write_mask)
 {
-    target_ulong val = 0;
+    uint64_t val = 0;
     RISCVException ret = riscv_csrrw(env, csr, &val, src, write_mask, GETPC());
 
     if (ret != RISCV_EXCP_NONE) {

@@ -544,7 +544,7 @@ char *riscv_cpu_get_name(RISCVCPU *cpu)
 
 static void riscv_dump_csr(CPURISCVState *env, int csrno, FILE *f)
 {
-    target_ulong val = 0;
+    uint64_t val = 0;
     RISCVException res = riscv_csrrw_debug(env, csrno, &val, 0, 0);
 
     /*
@@ -552,7 +552,7 @@ static void riscv_dump_csr(CPURISCVState *env, int csrno, FILE *f)
      * to do the filtering of the registers that are present.
      */
     if (res == RISCV_EXCP_NONE) {
-        qemu_fprintf(f, " %-8s " TARGET_FMT_lx "\n",
+        qemu_fprintf(f, " %-8s " "%016" PRIx64 "\n",
                      csr_ops[csrno].name, val);
     }
 }

@@ -512,7 +512,7 @@ bool pmp_hart_has_privs(CPURISCVState *env, hwaddr addr,
  * Handle a write to a pmpcfg CSR
  */
 void pmpcfg_csr_write(CPURISCVState *env, uint32_t reg_index,
-                      target_ulong val)
+                      uint64_t val)
 {
     int i;
     uint8_t cfg_val;
@@ -537,11 +537,11 @@ void pmpcfg_csr_write(CPURISCVState *env, uint32_t reg_index,
 /*
  * Handle a read from a pmpcfg CSR
  */
-target_ulong pmpcfg_csr_read(CPURISCVState *env, uint32_t reg_index)
+uint64_t pmpcfg_csr_read(CPURISCVState *env, uint32_t reg_index)
 {
     int i;
-    target_ulong cfg_val = 0;
-    target_ulong val = 0;
+    uint64_t cfg_val = 0;
+    uint64_t val = 0;
     int pmpcfg_nums = 2 << riscv_cpu_mxl(env);
 
     for (i = 0; i < pmpcfg_nums; i++) {
@@ -558,7 +558,7 @@ target_ulong pmpcfg_csr_read(CPURISCVState *env, uint32_t reg_index)
  * Handle a write to a pmpaddr CSR
  */
 void pmpaddr_csr_write(CPURISCVState *env, uint32_t addr_index,
-                       target_ulong val)
+                       uint64_t val)
 {
     trace_pmpaddr_csr_write(env->mhartid, addr_index, val);
     bool is_next_cfg_tor = false;
@@ -607,9 +607,9 @@ void pmpaddr_csr_write(CPURISCVState *env, uint32_t addr_index,
  * Handle a read from a pmpaddr CSR
  * Change A field of pmpcfg affects the read value of pmpaddr
  */
-target_ulong pmpaddr_csr_read(CPURISCVState *env, uint32_t addr_index)
+uint64_t pmpaddr_csr_read(CPURISCVState *env, uint32_t addr_index)
 {
-    target_ulong val = 0;
+    uint64_t val = 0;
     uint8_t pmp_regions = riscv_cpu_cfg(env)->pmp_regions;
 
     if (addr_index < pmp_regions) {

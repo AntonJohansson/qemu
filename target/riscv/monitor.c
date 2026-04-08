@@ -246,7 +246,7 @@ void hmp_info_mem(Monitor *mon, const QDict *qdict)
 }
 
 static bool reg_is_ulong_integer(CPURISCVState *env, const char *name,
-                                 target_ulong *val, bool is_gprh)
+                                 uint64_t *val, bool is_gprh)
 {
     const char * const *reg_names;
     uint64_t *vals;
@@ -315,7 +315,7 @@ static bool reg_is_vreg(const char *name)
 int target_get_monitor_def(CPUState *cs, const char *name, uint64_t *pval)
 {
     CPURISCVState *env = &RISCV_CPU(cs)->env;
-    target_ulong val = 0;
+    uint64_t val = 0;
     uint64_t val64 = 0;
     int i;
 
