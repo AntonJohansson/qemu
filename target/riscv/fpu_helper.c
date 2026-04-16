@@ -19,6 +19,8 @@
 #include "qemu/osdep.h"
 #include "cpu.h"
 #include "qemu/host-utils.h"
+#define HELPER_SPLIT_TARGET
+#define HELPER_INCLUDE_TARGET
 #include "exec/helper-proto.h"
 #include "fpu/softfloat.h"
 #include "internals.h"

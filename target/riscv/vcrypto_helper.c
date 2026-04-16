@@ -26,6 +26,8 @@
 #include "crypto/aes-round.h"
 #include "crypto/sm4.h"
 #include "exec/memop.h"
+#define HELPER_SPLIT_TARGET
+#define HELPER_INCLUDE_TARGET
 #include "exec/helper-proto.h"
 #include "internals.h"
 #include "vector_internals.h"

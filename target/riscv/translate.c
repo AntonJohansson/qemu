@@ -20,8 +20,6 @@
 #include "qemu/log.h"
 #include "cpu.h"
 #include "tcg/tcg-op.h"
-#include "exec/helper-proto.h"
-#include "exec/helper-gen.h"
 #include "exec/target_page.h"
 #include "exec/translator.h"
 #include "accel/tcg/cpu-ldst.h"
@@ -32,7 +30,19 @@
 
 #include "internals.h"
 
-#define HELPER_H "helper.h"
+#define HELPER_SPLIT_TARGET
+#define HELPER_INCLUDE_COMMON
+#define HELPER_INCLUDE_TARGET
+#include "exec/helper-proto.h"
+#include "exec/helper-gen.h"
+
+#define HELPER_TARGET_SUFFIX
+#define HELPER_H "helper-target.h"
+#include "exec/helper-info.c.inc"
+#undef  HELPER_H
+
+#undef HELPER_TARGET_SUFFIX
+#define HELPER_H "helper-common.h"
 #include "exec/helper-info.c.inc"
 #undef  HELPER_H
 

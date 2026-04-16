@@ -24,6 +24,8 @@
 #include "accel/tcg/cpu-ldst.h"
 #include "accel/tcg/probe.h"
 #include "exec/page-protection.h"
+#define HELPER_SPLIT_TARGET
+#define HELPER_INCLUDE_TARGET
 #include "exec/helper-proto.h"
 #include "exec/tlb-flags.h"
 #include "exec/target_page.h"

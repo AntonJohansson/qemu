@@ -21,6 +21,8 @@
 #include "qemu/osdep.h"
 #include "qemu/host-utils.h"
 #include "exec/target_long.h"
+#define HELPER_SPLIT_TARGET
+#define HELPER_INCLUDE_TARGET
 #include "exec/helper-proto.h"
 #include "tcg/tcg.h"
 

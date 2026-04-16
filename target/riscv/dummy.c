@@ -6,6 +6,8 @@
 #include "exec/cputlb.h"
 #include "accel/tcg/cpu-ldst.h"
 #include "accel/tcg/probe.h"
+#define HELPER_SPLIT_TARGET
+#define HELPER_INCLUDE_TARGET
 #include "exec/helper-proto.h"
 #include "exec/tlb-flags.h"
 #include "trace.h"
@@ -14,7 +16,6 @@
 #include "qemu/osdep.h"
 #include "cpu.h"
 #include "qemu/host-utils.h"
-#include "exec/helper-proto.h"
 #include "fpu/softfloat.h"
 #include "internals.h"
 

@@ -19,6 +19,8 @@
 
 #include "qemu/osdep.h"
 #include "cpu.h"
+#define HELPER_SPLIT_TARGET
+#define HELPER_INCLUDE_TARGET
 #include "exec/helper-proto.h"
 #include "crypto/aes.h"
 #include "crypto/aes-round.h"

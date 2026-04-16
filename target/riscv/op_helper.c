@@ -25,9 +25,12 @@
 #include "exec/cputlb.h"
 #include "accel/tcg/cpu-ldst.h"
 #include "accel/tcg/probe.h"
-#include "exec/helper-proto.h"
 #include "exec/tlb-flags.h"
 #include "trace.h"
+
+#define HELPER_SPLIT_TARGET
+#define HELPER_INCLUDE_TARGET
+#include "exec/helper-proto.h"
 
 #ifndef CONFIG_USER_ONLY
 static inline MemOp mo_endian_env(CPURISCVState *env)

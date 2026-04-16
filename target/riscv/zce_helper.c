@@ -18,6 +18,8 @@
 
 #include "qemu/osdep.h"
 #include "cpu.h"
+#define HELPER_SPLIT_TARGET
+#define HELPER_INCLUDE_TARGET
 #include "exec/helper-proto.h"
 #include "accel/tcg/cpu-ldst.h"
 
