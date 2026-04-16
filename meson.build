@@ -3725,6 +3725,7 @@ plugin_modules = []
 hw_arch = {}
 target_arch = {}
 target_dup_arch = {}
+target_dup_system_arch = {}
 target_system_arch = {}
 target_user_arch = {}
 hw_common_arch = {}
@@ -4257,6 +4258,7 @@ foreach target : target_dirs
   if target.endswith('-softmmu')
     if target_base_arch in target_dup_arch
       t = target_dup_arch[target_base_arch].apply(config_target, strict: false)
+      #t = target_dup_system_arch[target_base_arch].apply(config_target, strict: false)
       lib = static_library('qemu-dup-' + target,
                      sources: t.sources(),
                      dependencies: t.dependencies(),
