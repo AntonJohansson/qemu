@@ -8,6 +8,8 @@ gen = [
 ]
 
 riscv_dup_ss = ss.source_set()
+riscv_dup_system_ss = ss.source_set()
+riscv_common_system_ss = ss.source_set()
 riscv_ss = ss.source_set()
 riscv_ss.add(gen)
 
@@ -53,5 +55,7 @@ subdir('tcg')
 subdir('kvm')
 
 target_arch += {'riscv': riscv_ss}
-target_dup_arch += {'riscv' : riscv_dup_ss}
 target_system_arch += {'riscv': riscv_system_ss}
+target_dup_arch += {'riscv' : riscv_dup_ss}
+target_common_system_arch += {'riscv': riscv_common_system_ss}
+#target_dup_system_arch += {'riscv': riscv_dup_system_ss}
