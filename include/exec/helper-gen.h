@@ -9,8 +9,24 @@
 
 #include "exec/helper-gen-common.h"
 
-#define HELPER_H "helper.h"
-#include "exec/helper-gen.h.inc"
-#undef  HELPER_H
+#ifdef HELPER_INCLUDE_COMMON
+# undef HELPER_TARGET_SUFFIX
+# define HELPER_H "helper-common.h"
+# include "exec/helper-gen.h.inc"
+# undef  HELPER_H
+#endif
+
+#ifdef HELPER_INCLUDE_TARGET
+# define HELPER_TARGET_SUFFIX
+# define HELPER_H "helper-target.h"
+# include "exec/helper-gen.h.inc"
+# undef  HELPER_H
+#endif
+
+#ifndef HELPER_SPLIT_TARGET
+# define HELPER_H "helper.h"
+# include "exec/helper-gen.h.inc"
+# undef  HELPER_H
+#endif
 
 #endif /* HELPER_GEN_H */

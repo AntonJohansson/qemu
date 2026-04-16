@@ -9,6 +9,7 @@
 #include "tcg/tcg.h"
 #include "tcg/helper-info.h"
 #include "exec/helper-head.h.inc"
+#include "exec/helper-name.h.inc"
 
 #define DEF_HELPER_FLAGS_0(name, flags, ret)                            \
 extern TCGHelperInfo HELPER_INFO(name);                                 \

@@ -6,6 +6,7 @@
  */
 
 #include "exec/helper-head.h.inc"
+#include "exec/helper-name.h.inc"
 
 /*
  * Work around an issue with --enable-lto, in which GCC's ipa-split pass

@@ -8,6 +8,7 @@
 #include "tcg/tcg.h"
 #include "tcg/helper-info.h"
 #include "exec/helper-head.h.inc"
+#include "exec/helper-name.h.inc"
 
 /*
  * Need one more level of indirection before stringification
