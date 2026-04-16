@@ -36,12 +36,16 @@ riscv_dup_ss.add(files(
   'vcrypto_helper.c',
   'bitmanip_helper.c',
 ))
+#riscv_dup_ss.add(gen)
+
+riscv_common_system_ss.add(files(
+  'debug.c',
+))
 
 riscv_system_ss = ss.source_set()
 riscv_system_ss.add(files(
   'arch_dump.c',
   'pmp.c',
-  'debug.c',
   'monitor.c',
   'machine.c',
   'mips_csr.c',
