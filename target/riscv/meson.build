@@ -10,8 +10,8 @@ gen = [
 riscv_dup_ss = ss.source_set()
 riscv_dup_system_ss = ss.source_set()
 riscv_common_system_ss = ss.source_set()
+riscv_common_ss = ss.source_set()
 riscv_ss = ss.source_set()
-riscv_ss.add(gen)
 
 riscv_ss.add(when: 'CONFIG_ARM_COMPATIBLE_SEMIHOSTING',
 		     if_true: files('common-semi-target.c'))
@@ -21,7 +21,6 @@ riscv_ss.add(files(
   'csr.c',
   'gdbstub.c',
   'vector_internals.c',
-  'translate.c',
   'cpu_helper.c',
   'dummy.c',
 ))
@@ -35,11 +34,13 @@ riscv_dup_ss.add(files(
   'crypto_helper.c',
   'vcrypto_helper.c',
   'bitmanip_helper.c',
+  'translate.c',
 ))
-#riscv_dup_ss.add(gen)
+riscv_dup_ss.add(gen)
 
 riscv_common_system_ss.add(files(
   'debug.c',
+  'translate-common.c',
 ))
 
 riscv_system_ss = ss.source_set()
@@ -61,5 +62,6 @@ subdir('kvm')
 target_arch += {'riscv': riscv_ss}
 target_system_arch += {'riscv': riscv_system_ss}
 target_dup_arch += {'riscv' : riscv_dup_ss}
+target_common_arch += {'riscv' : riscv_common_ss }
 target_common_system_arch += {'riscv': riscv_common_system_ss}
 #target_dup_system_arch += {'riscv': riscv_dup_system_ss}
