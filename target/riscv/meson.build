@@ -12,6 +12,7 @@ riscv_dup_system_ss = ss.source_set()
 riscv_common_system_ss = ss.source_set()
 riscv_common_ss = ss.source_set()
 riscv_ss = ss.source_set()
+riscv_user_ss = ss.source_set()
 
 riscv_ss.add(when: 'CONFIG_ARM_COMPATIBLE_SEMIHOSTING',
 		     if_true: files('common-semi-target.c'))
@@ -38,9 +39,14 @@ riscv_dup_ss.add(files(
 ))
 riscv_dup_ss.add(gen)
 
+riscv_user_ss.add(files(
+  'dummy-common.c'
+))
+
 riscv_common_system_ss.add(files(
   'debug.c',
   'translate-common.c',
+  'dummy-common.c'
 ))
 
 riscv_system_ss = ss.source_set()
@@ -60,6 +66,7 @@ subdir('tcg')
 subdir('kvm')
 
 target_arch += {'riscv': riscv_ss}
+target_user_arch += {'riscv': riscv_user_ss}
 target_system_arch += {'riscv': riscv_system_ss}
 target_dup_arch += {'riscv' : riscv_dup_ss}
 target_common_arch += {'riscv' : riscv_common_ss }
