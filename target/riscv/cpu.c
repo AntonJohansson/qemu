@@ -38,6 +38,7 @@
 #include "kvm/kvm_riscv.h"
 #include "tcg/tcg-cpu.h"
 #include "tcg/tcg.h"
+#include "exec/duplicate-symbol.h"
 #if !defined(CONFIG_USER_ONLY)
 #include "target/riscv/debug.h"
 #endif
@@ -916,7 +917,12 @@ void riscv_cpu_finalize_features(RISCVCPU *cpu, Error **errp)
             error_propagate(errp, local_err);
             return;
         }
-        riscv_tcg_cpu_finalize_dynamic_decoder(cpu);
+        riscv_tcg_cpu_finalize_dynamic_decoder(cpu, DUPSYM(decoder_table), DUPSYM(decoder_table_size));
+        //if (target_riscv64()) {
+        //    riscv_tcg_cpu_finalize_dynamic_decoder(cpu, decoder_table_tl64, decoder_table_size_tl64);
+        //} else {
+        //    riscv_tcg_cpu_finalize_dynamic_decoder(cpu, decoder_table_tl32, decoder_table_size_tl32);
+        //}
     } else if (kvm_enabled()) {
         riscv_kvm_cpu_finalize_features(cpu, &local_err);
         if (local_err != NULL) {
