@@ -26,6 +26,7 @@
 #include "exec/translation-block.h"
 #include "exec/log.h"
 #include "exec/tswap.h"
+#include "exec/duplicate-symbol.h"
 #include "semihosting/semihost.h"
 
 #include "internals.h"
@@ -38,11 +39,6 @@
 
 #define HELPER_TARGET_SUFFIX
 #define HELPER_H "helper-target.h"
-#include "exec/helper-info.c.inc"
-#undef  HELPER_H
-
-#undef HELPER_TARGET_SUFFIX
-#define HELPER_H "helper-common.h"
 #include "exec/helper-info.c.inc"
 #undef  HELPER_H
 
@@ -1244,14 +1240,14 @@ static uint32_t opcode_at(DisasContextBase *dcbase, target_ulong pc)
 /* The specification allows for longer insns, but not supported by qemu. */
 #define MAX_INSN_LEN  4
 
-const RISCVDecoder decoder_table[] = {
+const RISCVDecoder DUPSYM(decoder_table)[] = {
     { always_true_p, decode_insn32 },
     { has_xmips_p, decode_xmips},
     { has_xthead_p, decode_xthead},
     { has_XVentanaCondOps_p, decode_XVentanaCodeOps},
 };
 
-const size_t decoder_table_size = ARRAY_SIZE(decoder_table);
+const size_t DUPSYM(decoder_table_size) = ARRAY_SIZE(DUPSYM(decoder_table));
 
 static void decode_opc(CPURISCVState *env, DisasContext *ctx)
 {
@@ -1449,15 +1445,15 @@ static const TranslatorOps riscv_tr_ops = {
     .tb_stop            = riscv_tr_tb_stop,
 };
 
-void riscv_translate_code(CPUState *cs, TranslationBlock *tb,
-                          int *max_insns, vaddr pc, void *host_pc)
+void DUPSYM(riscv_translate_code)(CPUState *cs, TranslationBlock *tb,
+                                  int *max_insns, vaddr pc, void *host_pc)
 {
     DisasContext ctx;
 
     translator_loop(cs, tb, max_insns, pc, host_pc, &riscv_tr_ops, &ctx.base);
 }
 
-void riscv_translate_init(void)
+void DUPSYM(riscv_translate_init)(void)
 {
     int i;
 

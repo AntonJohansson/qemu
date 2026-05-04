@@ -22,6 +22,7 @@
 #include "tcg-cpu.h"
 #include "cpu.h"
 #include "exec/target_page.h"
+#include "exec/duplicate-symbol.h"
 #include "internals.h"
 #include "pmu.h"
 #include "time_helper.h"
@@ -268,8 +269,8 @@ const TCGCPUOps riscv_tcg_ops = {
     .mttcg_supported = true,
     .guest_default_memory_order = 0,
 
-    .initialize = riscv_translate_init,
-    .translate_code = riscv_translate_code,
+    .initialize = DUPSYM(riscv_translate_init),
+    .translate_code = DUPSYM(riscv_translate_code),
     .get_tb_cpu_state = riscv_get_tb_cpu_state,
     .synchronize_from_tb = riscv_cpu_synchronize_from_tb,
     .restore_state_to_opc = riscv_restore_state_to_opc,
@@ -1198,7 +1199,9 @@ void riscv_tcg_cpu_finalize_features(RISCVCPU *cpu, Error **errp)
 #endif
 }
 
-void riscv_tcg_cpu_finalize_dynamic_decoder(RISCVCPU *cpu)
+void riscv_tcg_cpu_finalize_dynamic_decoder(RISCVCPU *cpu,
+                                            const RISCVDecoder *decoder_table,
+                                            size_t decoder_table_size)
 {
     GPtrArray *dynamic_decoders;
     dynamic_decoders = g_ptr_array_sized_new(decoder_table_size);

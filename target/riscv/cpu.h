@@ -660,9 +660,12 @@ void riscv_ctr_add_entry(CPURISCVState *env, uint64_t src, uint64_t dst,
                          bool prev_virt);
 void riscv_ctr_clear(CPURISCVState *env);
 
-void riscv_translate_init(void);
-void riscv_translate_code(CPUState *cs, TranslationBlock *tb,
-                          int *max_insns, vaddr pc, void *host_pc);
+void riscv_translate_init_tl32(void);
+void riscv_translate_init_tl64(void);
+void riscv_translate_code_tl32(CPUState *cs, TranslationBlock *tb,
+                               int *max_insns, vaddr pc, void *host_pc);
+void riscv_translate_code_tl64(CPUState *cs, TranslationBlock *tb,
+                               int *max_insns, vaddr pc, void *host_pc);
 
 G_NORETURN void riscv_raise_exception(CPURISCVState *env,
                                       RISCVException exception,

@@ -37,10 +37,14 @@ typedef struct RISCVDecoder {
 
 typedef bool (*riscv_cpu_decode_fn)(struct DisasContext *, uint32_t);
 
-extern const size_t decoder_table_size;
+extern const size_t decoder_table_size_tl32;
+extern const size_t decoder_table_size_tl64;
 
-extern const RISCVDecoder decoder_table[];
+extern const RISCVDecoder decoder_table_tl32[];
+extern const RISCVDecoder decoder_table_tl64[];
 
-void riscv_tcg_cpu_finalize_dynamic_decoder(RISCVCPU *cpu);
+void riscv_tcg_cpu_finalize_dynamic_decoder(RISCVCPU *cpu,
+                                            const RISCVDecoder *decoder_table,
+                                            size_t decoder_table_size);
 
 #endif
